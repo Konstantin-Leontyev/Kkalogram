@@ -3,6 +3,9 @@ from datetime import timedelta
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
+from dotenv.main import load_dotenv
+
+load_dotenv()
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split()
 
@@ -21,6 +24,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
@@ -34,15 +39,49 @@ DEBUG = os.getenv('DEBUG') == 'True'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DJOSER = {
+    'HIDE_USERS': False,
+    # 'LOGIN_FIELD': 'email',
+    'PERMISSIONS': {
+        'user_list': [
+            'rest_framework.permissions.AllowAny'
+        ],
+    },
+    "SERIALIZERS": {
+            # "user": "api.serializers.UserSerializer",
+            "user_list": "api.serializers.UserSerializer",
+            # "current_user": "api.serializers.UserSerializer",
+            "user_create": "users.serializers.CustomUserCreateSerializer",
+        },
+}
+# DJOSER = {
+#     "LOGIN_FIELD": "email",
+#     "HIDE_USERS": False,
+#     "PERMISSIONS": {
+#         "resipe": ("api.permissions.AuthorStaffOrReadOnly,",),
+#         "recipe_list": ("api.permissions.AuthorStaffOrReadOnly",),
+#         "user": ("api.permissions.OwnerUserOrReadOnly",),
+#         "user_list": ("api.permissions.OwnerUserOrReadOnly",),
+#     },
+#     "SERIALIZERS": {
+#         "user": "api.serializers.UserSerializer",
+#         "user_list": "api.serializers.UserSerializer",
+#         "current_user": "api.serializers.UserSerializer",
+#         "user_create": "api.serializers.UserSerializer",
+#     },
+# }
+
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
+    'users.apps.UsersAuthConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
+    'users.apps.UsersConfig',
 ]
 
 LANGUAGE_CODE = 'ru-RU'
@@ -63,7 +102,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
@@ -97,6 +136,8 @@ TEMPLATES = [
 TIME_ZONE = 'UTC'
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
+
+USERNAME_MAX_LENGTH = 150
 
 USE_I18N = True
 
