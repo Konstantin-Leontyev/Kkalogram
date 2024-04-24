@@ -41,35 +41,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DJOSER = {
     'HIDE_USERS': False,
-    # 'LOGIN_FIELD': 'email',
+    'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
-        'user_list': [
-            'rest_framework.permissions.AllowAny'
-        ],
+        # "recipe": ("api.permissions.IsAdminUser,",),
+        # "recipe_list": ("api.permissions.IsAdminUser",),
+        'user': ('rest_framework.permissions.IsAuthenticated',),
+        'user_list': ('rest_framework.permissions.AllowAny',)
     },
     "SERIALIZERS": {
-            # "user": "api.serializers.UserSerializer",
-            "user_list": "api.serializers.UserSerializer",
-            # "current_user": "api.serializers.UserSerializer",
+            "user": "users.serializers.CustomUserCreateSerializer",
+            "user_list": "users.serializers.CustomUserCreateSerializer",
+            "current_user": "users.serializers.CustomUserCreateSerializer",
             "user_create": "users.serializers.CustomUserCreateSerializer",
         },
 }
-# DJOSER = {
-#     "LOGIN_FIELD": "email",
-#     "HIDE_USERS": False,
-#     "PERMISSIONS": {
-#         "resipe": ("api.permissions.AuthorStaffOrReadOnly,",),
-#         "recipe_list": ("api.permissions.AuthorStaffOrReadOnly",),
-#         "user": ("api.permissions.OwnerUserOrReadOnly",),
-#         "user_list": ("api.permissions.OwnerUserOrReadOnly",),
-#     },
-#     "SERIALIZERS": {
-#         "user": "api.serializers.UserSerializer",
-#         "user_list": "api.serializers.UserSerializer",
-#         "current_user": "api.serializers.UserSerializer",
-#         "user_create": "api.serializers.UserSerializer",
-#     },
-# }
 
 INSTALLED_APPS = [
     'django.contrib.admin',

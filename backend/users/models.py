@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from backend.foodgram.settings import USERNAME_MAX_LENGTH
-from backend.users.validators import (
+# from ..foodgram.settings import USERNAME_MAX_LENGTH
+from .validators import (
     me_value_username_validator,
     unicode_username_validator,
 )
@@ -10,8 +10,6 @@ from backend.users.validators import (
 
 class User(AbstractUser):
     """Describes user model."""
-#
-    USERNAME_FIELD = 'email'
 
     email = models.EmailField(
         'Адрес электронной почты',
@@ -19,7 +17,7 @@ class User(AbstractUser):
     )
     username = models.CharField(
         'Имя пользователя',
-        max_length=USERNAME_MAX_LENGTH,
+        max_length=150,
         unique=True,
         validators=[
             me_value_username_validator,
@@ -27,12 +25,13 @@ class User(AbstractUser):
         ])
 
     REQUIRED_FIELDS = [
-        # 'email',
         'first_name',
         'id',
         'last_name',
         'username',
     ]
+
+    USERNAME_FIELD = 'email'
 
     class Meta:
         default_related_name = 'users'

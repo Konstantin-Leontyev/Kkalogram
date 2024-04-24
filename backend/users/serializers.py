@@ -1,10 +1,9 @@
-# from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
-
-# User = get_user_model()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    """Custom user create serializer"""
+
     class Meta(UserCreateSerializer.Meta):
         extra_kwargs = {
             'email': {'required': True},
