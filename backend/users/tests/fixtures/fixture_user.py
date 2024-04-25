@@ -4,13 +4,46 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 
 @pytest.fixture
+def fields():
+    return [
+        'email',
+        'first_name',
+        'last_name',
+        'password',
+        'username'
+    ]
+
+
+@pytest.fixture
+def valid_data():
+    return {
+        'email': 'valid@yamdb.fake',
+        'username': 'valid_username',
+        'last_name': 'username',
+        'first_name': 'valid',
+        'password': '1dE(45wef'
+    }
+
+
+@pytest.fixture
+def invalid_data():
+    return {
+        'email': 'invalid_email',
+        'first_name': 'valid_name',
+        'last_name': 'valid_surname',
+        'username': 'invalid username',
+        'password': 'invalid_password'
+    }
+
+
+@pytest.fixture
 def user(django_user_model):
     return django_user_model.objects.create_user(
-        username='TestUser',
         email='testuser@yamdb.fake',
+        first_name='name',
+        last_name='surname',
         password='1234567',
-        role='user',
-        bio='user bio'
+        username='TestUser',
     )
 
 

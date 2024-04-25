@@ -22,6 +22,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'users.validators.NumberValidator',
+    },
+    {
+        'NAME': 'users.validators.UppercaseValidator',
+    },
+    {
+        'NAME': 'users.validators.LowercaseValidator',
+    },
+    {
+        'NAME': 'users.validators.SymbolValidator',
+    },
+]
+
+AUTH_USERNAME_VALIDATORS = [
+    {
+        'NAME': 'users.validators.MeValidator',
+    },
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -52,11 +70,11 @@ DJOSER = {
         'user_list': ('rest_framework.permissions.AllowAny',)
     },
     "SERIALIZERS": {
-            "user": "users.serializers.CustomUserCreateSerializer",
-            "user_list": "users.serializers.CustomUserCreateSerializer",
-            "current_user": "users.serializers.CustomUserCreateSerializer",
-            "user_create": "users.serializers.CustomUserCreateSerializer",
-        },
+        'user': 'users.serializers.CustomUserCreateSerializer',
+        'user_list': 'users.serializers.CustomUserCreateSerializer',
+        'current_user': 'users.serializers.CustomUserCreateSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
+    },
 }
 
 INSTALLED_APPS = [

@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import rest_framework
 from django.utils.version import get_version
 from dotenv.main import load_dotenv
 
@@ -28,6 +29,9 @@ for dir_name in (PROJECT_DIR_NAME,):
 
 
 assert get_version() < '4.0.0', 'Пожалуйста, используйте версию Django < 4.0.0'
+assert rest_framework.VERSION == '3.12.4', 'Пожалуйста, используйте версию Django REST framework < 3.12.4'
+# print(rest_framework.VERSION)
+# print()
 
 # pytest_plugins = [
 #     'backend.users.tests.fixtures.fixture_user.py',
