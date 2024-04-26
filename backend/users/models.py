@@ -1,11 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+# from foodgram-project-react.backend.foodgram.settings import USERNAME_MAX_LENGTH
 # from ..foodgram.settings import USERNAME_MAX_LENGTH
-from .validators import (
-    me_value_username_validator,
-    unicode_username_validator,
-)
+from .validators import me_value_username_validator, unicode_username_validator
 
 
 class User(AbstractUser):
@@ -14,6 +12,14 @@ class User(AbstractUser):
     email = models.EmailField(
         'Адрес электронной почты',
         unique=True,
+    )
+    first_name = models.CharField(
+        'Имя',
+        max_length=150,
+    )
+    last_name = models.CharField(
+        'Фамилия',
+        max_length=150,
     )
     username = models.CharField(
         'Имя пользователя',
