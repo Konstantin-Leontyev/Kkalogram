@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
@@ -140,8 +139,6 @@ TEMPLATES = [
 TIME_ZONE = 'UTC'
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
-
-USERNAME_MAX_LENGTH = 150
 
 USE_I18N = True
 

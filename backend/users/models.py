@@ -1,8 +1,7 @@
+from core.constants import USERNAME_MAX_LENGTH
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# from foodgram-project-react.backend.foodgram.settings import USERNAME_MAX_LENGTH
-# from ..foodgram.settings import USERNAME_MAX_LENGTH
 from .validators import me_value_username_validator, unicode_username_validator
 
 
@@ -15,15 +14,15 @@ class User(AbstractUser):
     )
     first_name = models.CharField(
         'Имя',
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
     )
     last_name = models.CharField(
         'Фамилия',
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
     )
     username = models.CharField(
         'Имя пользователя',
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
         unique=True,
         validators=[
             me_value_username_validator,

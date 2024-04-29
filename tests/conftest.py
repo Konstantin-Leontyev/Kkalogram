@@ -53,5 +53,5 @@ assert dotenv_version == required_dotenv_version, (
 )
 
 # pytest_plugins = [
-#     'fixtures.fixture_user.py',
+#     'fixtures.fixture_user',
 # ]

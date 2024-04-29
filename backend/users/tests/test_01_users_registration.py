@@ -4,10 +4,7 @@ from sqlite3 import IntegrityError
 import django
 import pytest
 
-
-from .utils import (
-    invalid_data_for_username_and_email_fields
-)
+from .utils import invalid_data_for_username_and_email_fields
 
 django.setup()
 
@@ -18,28 +15,28 @@ class TestUserRegistration:
     URL_TOKEN = '/api/auth/token/'
 
     fields = [
-            'email',
-            'first_name',
-            'last_name',
-            'password',
-            'username'
-        ]
+        'email',
+        'first_name',
+        'last_name',
+        'password',
+        'username'
+    ]
 
     valid_data = {
-            'email': 'valid@yamdb.fake',
-            'username': 'valid_username',
-            'last_name': 'username',
-            'first_name': 'valid',
-            'password': '1dE(45wef'
-        }
+        'email': 'valid@yamdb.fake',
+        'username': 'valid_username',
+        'last_name': 'username',
+        'first_name': 'valid',
+        'password': '1dE(45wef'
+    }
 
     invalid_data = {
-            'email': 'invalid_email',
-            'first_name': 'valid_name',
-            'last_name': 'valid_surname',
-            'username': 'invalid username',
-            'password': 'invalid_password'
-        }
+        'email': 'invalid_email',
+        'first_name': 'valid_name',
+        'last_name': 'valid_surname',
+        'username': 'invalid username',
+        'password': 'invalid_password'
+    }
 
     def test_01_nodata_signup(self, client):
         response = client.post(self.URL_SIGNUP)
@@ -162,8 +159,9 @@ class TestUserRegistration:
                 'некорректными данными не создаёт нового пользователя.'
             )
             assert users_count == django_user_model.objects.count(), (
-                f'Проверьте, что POST-запрос к `{self.URL_SIGNUP}`, не содержащий '
-                'данных о `password`, не создаёт нового пользователя.'
+                f'Проверьте, что POST-запрос к `{self.URL_SIGNUP}`, '
+                'не содержащий данных о `password`, '
+                'не создаёт нового пользователя.'
             )
 
     def test_05_valid_data_user_signup(self, client, django_user_model):
@@ -191,7 +189,9 @@ class TestUserRegistration:
             'информацию о `username` и `email` созданного пользователя.'
         )
 
-        new_user = django_user_model.objects.filter(email=self.valid_data['email'])
+        new_user = django_user_model.objects.filter(
+            email=self.valid_data['email']
+        )
         assert new_user.exists(), (
             'POST-запрос с корректными данными, отправленный на эндпоинт '
             f'`{self.URL_SIGNUP}`, должен создать нового пользователя.'
@@ -229,9 +229,7 @@ class TestUserRegistration:
         )
 
     def test_08_registration_same_email_and_username_restricted(self, client):
-        valid_email_1 = 'test_duplicate_1@yamdb.fake'
         valid_email_2 = 'test_duplicate_2@yamdb.fake'
-        valid_username_1 = 'valid_username_1'
         valid_username_2 = 'valid_username_2'
 
         response = client.post(self.URL_SIGNUP, data=self.valid_data)
@@ -264,7 +262,9 @@ class TestUserRegistration:
             'статусом 400.'
         )
         try:
-            response = client.post(self.URL_SIGNUP, data=duplicate_username_data)
+            response = client.post(
+                self.URL_SIGNUP, data=duplicate_username_data
+            )
         except IntegrityError:
             raise AssertionError(assert_msg)
         assert response.status_code == HTTPStatus.BAD_REQUEST, assert_msg

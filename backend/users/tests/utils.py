@@ -1,6 +1,3 @@
-from http import HTTPStatus
-
-
 invalid_data_for_username_and_email_fields = [
     (
         {
@@ -10,11 +7,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|A|',
             'username': 'valid-username'
         },
-        ((
+        (
             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
             'проверяется длина поля `email`: его содержимое не должно быть '
             'длиннее 254 символа.'
-        ),)
+        ),
     ),
     (
         {
@@ -24,11 +21,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|A|',
             'username': ('a' * 151)
         },
-        ((
+        (
             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
             'проверяется длина поля `username`: его содержимое не должно быть '
             'длиннее 150 символов.'
-        ),)
+        ),
     ),
     (
         {
@@ -38,11 +35,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|A|',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'проверяется длина поля `first_name`: его содержимое не должно быть '
-             'длиннее 150 символов.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'проверяется длина поля `first_name`: '
+            'его содержимое не должно быть длиннее 150 символов.'
+        ),
     ),
     (
         {
@@ -52,11 +49,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|A|',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'проверяется длина поля `last_name`: его содержимое не должно быть '
-             'длиннее 150 символов.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'проверяется длина поля `last_name`: '
+            'его содержимое не должно быть длиннее 150 символов.'
+        ),
     ),
     (
         {
@@ -66,11 +63,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|A|',
             'username': '|A|z|-|+|@|.|_|1|'
         },
-        ((
+        (
             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
             'содержание поля `username` проверяется на соответствие '
             'паттерну, указанному в спецификации: ^[\\w.@+-]+\\z'
-        ),)
+        ),
     ),
     (
         {
@@ -80,11 +77,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|a|',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'содержание поля `password` проверяется на наличие '
-             'хотя бы одной заглавной буквы.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'содержание поля `password` проверяется на наличие '
+            'хотя бы одной заглавной буквы.'
+        ),
     ),
     (
         {
@@ -94,11 +91,11 @@ invalid_data_for_username_and_email_fields = [
             'password': '1|2|3|A|',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'содержание поля `password` проверяется на наличие '
-             'хотя бы одной строчной буквы.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'содержание поля `password` проверяется на наличие '
+            'хотя бы одной строчной буквы.'
+        ),
     ),
     (
         {
@@ -108,11 +105,11 @@ invalid_data_for_username_and_email_fields = [
             'password': 'a|b|c|d|',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'содержание поля `password` проверяется на наличие '
-             'хотя бы одной цифры.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'содержание поля `password` проверяется на наличие '
+            'хотя бы одной цифры.'
+        ),
     ),
     (
         {
@@ -122,11 +119,10 @@ invalid_data_for_username_and_email_fields = [
             'password': '1234Abcd',
             'username': 'valid-username'
         },
-        ((
-             'Проверьте, что при обработке {request_method}-запроса к `{url}` '
-             'содержание поля `password` проверяется на наличие '
-             r'хотя бы одного символа ()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?.'
-         ),)
+        (
+            'Проверьте, что при обработке {request_method}-запроса к `{url}` '
+            'содержание поля `password` проверяется на наличие '
+            r'хотя бы одного символа ()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?.'
+        ),
     ),
 ]
-invalid_data_for_user_patch_and_creation = invalid_data_for_username_and_email_fields.copy()
