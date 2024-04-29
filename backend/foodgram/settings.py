@@ -119,11 +119,6 @@ ROOT_URLCONF = 'foodgram.urls'
 
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 STATIC_URL = '/static/'
 
 TEMPLATES = [

@@ -1,16 +1,15 @@
 from http import HTTPStatus
 from sqlite3 import IntegrityError
 
+import django
 import pytest
-from django.conf import settings
 
-# from django.core import mail
-# from django.db.utils import IntegrityError
-#
+
 from .utils import (
-    invalid_data_for_user_patch_and_creation,
     invalid_data_for_username_and_email_fields
 )
+
+django.setup()
 
 
 @pytest.mark.django_db(transaction=True)
@@ -109,8 +108,7 @@ class TestUserRegistration:
                 f'{info}'
             )
 
-    def test_03_invalid_data_signup(self, client,
-                                    django_user_model):
+    def test_03_invalid_data_signup(self, client, django_user_model):
         users_count = django_user_model.objects.count()
 
         response = client.post(self.URL_SIGNUP, data=self.invalid_data)
@@ -142,8 +140,7 @@ class TestUserRegistration:
                 'о неправильно заполненных полях.'
             )
 
-    def test_04_no_required_data_signup(self, client,
-                                        django_user_model):
+    def test_04_no_required_data_signup(self, client, django_user_model):
         users_count = django_user_model.objects.count()
 
         for field in self.fields:
@@ -221,7 +218,7 @@ class TestUserRegistration:
             'содержанию - новый пользователь не должен быть создан.'
         )
 
-    def test_00_registration_me_username_restricted(self, client):
+    def test_07_registration_me_username_restricted(self, client):
         me_data = self.valid_data.copy()
         me_data['username'] = 'me'
         response = client.post(self.URL_SIGNUP, data=me_data)
@@ -231,51 +228,43 @@ class TestUserRegistration:
             'должен вернуться ответ со статусом 400.'
         )
 
-    # def test_00_registration_same_email_restricted(self, client):
-    #     valid_email_1 = 'test_duplicate_1@yamdb.fake'
-    #     valid_email_2 = 'test_duplicate_2@yamdb.fake'
-    #     valid_username_1 = 'valid_username_1'
-    #     valid_username_2 = 'valid_username_2'
-    #
-    #     valid_data = {
-    #         'email': valid_email_1,
-    #         'username': valid_username_1
-    #     }
-    #     response = client.post(self.URL_SIGNUP, data=valid_data)
-    #     assert response.status_code == HTTPStatus.OK, (
-    #         f'Проверьте, что POST-запрос к `{self.URL_SIGNUP}` с корректными '
-    #         'возвращает статус-код 200.'
-    #     )
-    #
-    #     duplicate_email_data = {
-    #         'email': valid_email_1,
-    #         'username': valid_username_2
-    #     }
-    #     assert_msg = (
-    #         f'Если POST-запрос, отправленный на эндпоинт `{self.URL_SIGNUP}`, '
-    #         'содержит `email` зарегистрированного пользователя и незанятый '
-    #         '`username` - должен вернуться ответ со статусом 400.'
-    #     )
-    #     try:
-    #         response = client.post(self.URL_SIGNUP, data=duplicate_email_data)
-    #     except IntegrityError:
-    #         raise AssertionError(assert_msg)
-    #     assert response.status_code == HTTPStatus.BAD_REQUEST, (assert_msg)
-    #
-    #     duplicate_username_data = {
-    #         'email': valid_email_2,
-    #         'username': valid_username_1
-    #     }
-    #     assert_msg = (
-    #         f'Если POST-запрос, отправленный на эндпоинт `{self.URL_SIGNUP}`, '
-    #         'содержит `username` зарегистрированного пользователя и '
-    #         'несоответствующий ему `email` - должен вернуться ответ со '
-    #         'статусом 400.'
-    #     )
-    #     try:
-    #         response = client.post(
-    #             self.URL_SIGNUP, data=duplicate_username_data
-    #         )
-    #     except IntegrityError:
-    #         raise AssertionError(assert_msg)
-    #     assert response.status_code == HTTPStatus.BAD_REQUEST, (assert_msg)
+    def test_08_registration_same_email_and_username_restricted(self, client):
+        valid_email_1 = 'test_duplicate_1@yamdb.fake'
+        valid_email_2 = 'test_duplicate_2@yamdb.fake'
+        valid_username_1 = 'valid_username_1'
+        valid_username_2 = 'valid_username_2'
+
+        response = client.post(self.URL_SIGNUP, data=self.valid_data)
+        assert response.status_code == HTTPStatus.CREATED, (
+            f'Проверьте, что POST-запрос к `{self.URL_SIGNUP}` с корректными '
+            'возвращает статус-код 201.'
+        )
+
+        duplicate_email_data = self.valid_data.copy()
+        duplicate_email_data['username'] = valid_username_2
+
+        assert_msg = (
+            f'Если POST-запрос, отправленный на эндпоинт `{self.URL_SIGNUP}`, '
+            'содержит `email` зарегистрированного пользователя и незанятый '
+            '`username` - должен вернуться ответ со статусом 400.'
+        )
+        try:
+            response = client.post(self.URL_SIGNUP, data=duplicate_email_data)
+        except IntegrityError:
+            raise AssertionError(assert_msg)
+        assert response.status_code == HTTPStatus.BAD_REQUEST, assert_msg
+
+        duplicate_username_data = self.valid_data.copy()
+        duplicate_username_data['email'] = valid_email_2
+
+        assert_msg = (
+            f'Если POST-запрос, отправленный на эндпоинт `{self.URL_SIGNUP}`, '
+            'содержит `username` зарегистрированного пользователя и '
+            'несоответствующий ему `email` - должен вернуться ответ со '
+            'статусом 400.'
+        )
+        try:
+            response = client.post(self.URL_SIGNUP, data=duplicate_username_data)
+        except IntegrityError:
+            raise AssertionError(assert_msg)
+        assert response.status_code == HTTPStatus.BAD_REQUEST, assert_msg
