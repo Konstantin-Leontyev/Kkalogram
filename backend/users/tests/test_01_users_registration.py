@@ -4,26 +4,24 @@ from sqlite3 import IntegrityError
 import pytest
 
 from .utils import (check_for_bad_request, check_for_created,
-                    check_for_page_not_found,
-                    invalid_data_for_username_and_email_fields)
+                    check_for_page_found,
+                    invalid_data_for_required_fields)
 
 
 @pytest.mark.django_db(transaction=True)
 class TestUserRegistration:
-    URL_SIGNUP = '/api/users/'
-    URL_TOKEN = '/api/auth/token/'
 
-    def test_01_nodata_signup(self, client, django_user_model,
-                              fields, url_signup):
+    def test_01_empty_data_signup(self, client, django_user_model,
+                                  fields, signup_url):
         users_count = django_user_model.objects.count()
 
-        response = client.post(path=url_signup)
+        response = client.post(path=signup_url)
 
-        check_for_page_not_found(response=response, url_signup=url_signup)
-        check_for_bad_request(response=response, url_signup=url_signup)
+        check_for_page_found(response=response, url=signup_url)
+        check_for_bad_request(response=response, url=signup_url)
 
         assert users_count == django_user_model.objects.count(), (
-            f'Проверьте, что POST-запрос к `{url_signup}` '
+            f'Проверьте, что POST-запрос к `{signup_url}` '
             'без данных не создаёт нового пользователя.'
         )
 
@@ -31,29 +29,22 @@ class TestUserRegistration:
         for field in fields:
             assert (field in response_json
                     and isinstance(response_json.get(field), list)), (
-                f'Если в POST-запросе к `{url_signup}` не переданы '
+                f'Если в POST-запросе к `{signup_url}` не переданы '
                 'необходимые данные, в ответе должна возвращаться информация '
                 'об обязательных для заполнения полях.'
             )
 
-    def test_02_blank_data_signup(self, client, django_user_model,
-                                  fields, url_signup):
-        blank_data = {
-            'email': '',
-            'first_name': '',
-            'last_name': '',
-            'username': '',
-            'password': '',
-        }
+    def test_02_blank_data_signup(self, blank_data, client, django_user_model,
+                                  fields, signup_url):
         users_count = django_user_model.objects.count()
 
-        response = client.post(path=url_signup, data=blank_data)
+        response = client.post(path=signup_url, data=blank_data)
 
-        check_for_page_not_found(response=response, url_signup=url_signup)
-        check_for_bad_request(response=response, url_signup=url_signup)
+        check_for_page_found(response=response, url=signup_url)
+        check_for_bad_request(response=response, url=signup_url)
 
         assert users_count == django_user_model.objects.count(), (
-            f'Проверьте, что POST-запрос к `{url_signup}` с '
+            f'Проверьте, что POST-запрос к `{signup_url}` с '
             'пустыми данными не создаёт нового пользователя.'
         )
 
@@ -64,22 +55,22 @@ class TestUserRegistration:
             assert (field in response_json
                     and isinstance(response_json_field, list)
                     and response_json_field[0] == info), (
-                f'Если в  POST-запросе к `{url_signup}` переданы '
+                f'Если в  POST-запросе к `{signup_url}` переданы '
                 'пустые данные, в ответе должно возвращаться уведомление: '
                 f'{info}'
             )
 
-    def test_03_invalid_data_signup(self, client, django_user_model,
-                                    invalid_data, url_signup):
+    def test_03_invalid_fields_in_response(self, client, django_user_model,
+                                           invalid_data, signup_url):
         users_count = django_user_model.objects.count()
 
-        response = client.post(path=url_signup, data=invalid_data)
+        response = client.post(path=signup_url, data=invalid_data)
 
-        check_for_page_not_found(response=response, url_signup=url_signup)
-        check_for_bad_request(response=response, url_signup=url_signup)
+        check_for_page_found(response=response, url=signup_url)
+        check_for_bad_request(response=response, url=signup_url)
 
         assert users_count == django_user_model.objects.count(), (
-            f'Проверьте, что POST-запрос к `{url_signup}` с '
+            f'Проверьте, что POST-запрос к `{signup_url}` с '
             'некорректными данными не создаёт нового пользователя.'
         )
 
@@ -91,36 +82,36 @@ class TestUserRegistration:
         for field in invalid_fields:
             assert (field in response_json
                     and isinstance(response_json.get(field), list)), (
-                f'Если в  POST-запросе к `{url_signup}` переданы '
+                f'Если в  POST-запросе к `{signup_url}` переданы '
                 'некорректные данные, в ответе должна возвращаться информация '
                 'о неправильно заполненных полях.'
             )
 
     def test_04_no_required_data_signup(self, client, django_user_model,
-                                        fields, valid_data, url_signup):
+                                        fields, valid_data, signup_url):
         users_count = django_user_model.objects.count()
 
         for field in fields:
             no_field_data = valid_data.copy()
             del no_field_data[field]
 
-            response = client.post(path=url_signup, data=no_field_data)
+            response = client.post(path=signup_url, data=no_field_data)
 
-            check_for_page_not_found(response=response, url_signup=url_signup)
-            check_for_bad_request(response=response, url_signup=url_signup)
+            check_for_page_found(response=response, url=signup_url)
+            check_for_bad_request(response=response, url=signup_url)
 
             assert users_count == django_user_model.objects.count(), (
-                f'Проверьте, что POST-запрос к `{url_signup}` с '
+                f'Проверьте, что POST-запрос к `{signup_url}` с '
                 'некорректными данными не создаёт нового пользователя.'
             )
             assert users_count == django_user_model.objects.count(), (
-                f'Проверьте, что POST-запрос к `{url_signup}`, '
+                f'Проверьте, что POST-запрос к `{signup_url}`, '
                 'не содержащий данных о `password`, '
                 'не создаёт нового пользователя.'
             )
 
     def test_05_valid_data_user_signup(self, client, django_user_model,
-                                       valid_data, url_signup):
+                                       valid_data, signup_url):
         valid_response = {
             'id': 1,
             'email': 'valid@foodgram.ru',
@@ -129,14 +120,14 @@ class TestUserRegistration:
             'username': 'valid_username'
         }
 
-        response = client.post(path=url_signup, data=valid_data)
+        response = client.post(path=signup_url, data=valid_data)
 
-        check_for_page_not_found(response=response, url_signup=url_signup)
-        check_for_created(response=response, url_signup=url_signup)
+        check_for_page_found(response=response, url=signup_url)
+        check_for_created(response=response, url=signup_url)
 
         assert response.json() == valid_response, (
             'POST-запрос с корректными данными, отправленный на эндпоинт '
-            f'`{url_signup}`, должен вернуть ответ, содержащий '
+            f'`{signup_url}`, должен вернуть ответ, содержащий '
             'информацию о `id`, `email`, `first_name`, `last_name`, и '
             '`username` созданного пользователя.'
         )
@@ -146,61 +137,59 @@ class TestUserRegistration:
         )
         assert new_user.exists(), (
             'POST-запрос с корректными данными, отправленный на эндпоинт '
-            f'`{url_signup}`, должен создать нового пользователя.'
+            f'`{signup_url}`, должен создать нового пользователя.'
         )
         new_user.delete()
 
     @pytest.mark.parametrize(
-        'data, message', invalid_data_for_username_and_email_fields
+        'data, message', invalid_data_for_required_fields
     )
-    def test_06_signup_fields_length_and_simbols_validation(self, client, data,
-                                                            django_user_model,
-                                                            message,
-                                                            url_signup):
+    def test_06_invalid_data_user_signup(self, client, data, django_user_model,
+                                         message, signup_url):
         request_method = 'POST'
         users_count = django_user_model.objects.count()
-        response = client.post(path=url_signup, data=data)
+        response = client.post(path=signup_url, data=data)
         assert response.status_code == HTTPStatus.BAD_REQUEST, (
             message[0].format(
-                url=url_signup, request_method=request_method
+                url=signup_url, request_method=request_method
             )
         )
         assert django_user_model.objects.count() == users_count, (
-            f'Если в POST-запросе к эндпоинту `{url_signup}` '
+            f'Если в POST-запросе к эндпоинту `{signup_url}` '
             'значения полей не соответствуют ограничениям по длине или '
             'содержанию - новый пользователь не должен быть создан.'
         )
 
     def test_07_registration_me_username_restricted(self, client,
-                                                    valid_data, url_signup):
+                                                    valid_data, signup_url):
         me_data = valid_data.copy()
         me_data['username'] = 'me'
-        response = client.post(path=url_signup, data=me_data)
+        response = client.post(path=signup_url, data=me_data)
         assert response.status_code == HTTPStatus.BAD_REQUEST, (
             'Если в POST-запросе, отправленном на эндпоинт '
-            f'`{url_signup}`, значением поля `username` указано `me` - '
+            f'`{signup_url}`, значением поля `username` указано `me` - '
             'должен вернуться ответ со статусом 400.'
         )
 
     def test_08_registration_same_email_and_username_restricted(self, client,
                                                                 valid_data,
-                                                                url_signup):
+                                                                signup_url):
         valid_email_2 = 'test_duplicate_2@yamdb.fake'
         valid_username_2 = 'valid_username_2'
 
-        response = client.post(path=url_signup, data=valid_data)
-        check_for_created(response=response, url_signup=url_signup)
+        response = client.post(path=signup_url, data=valid_data)
+        check_for_created(response=response, url=signup_url)
 
         duplicate_email_data = valid_data.copy()
         duplicate_email_data['username'] = valid_username_2
 
         assert_msg = (
-            f'Если POST-запрос, отправленный на эндпоинт `{url_signup}`, '
+            f'Если POST-запрос, отправленный на эндпоинт `{signup_url}`, '
             'содержит `email` зарегистрированного пользователя и незанятый '
             '`username` - должен вернуться ответ со статусом 400.'
         )
         try:
-            response = client.post(path=url_signup, data=duplicate_email_data)
+            response = client.post(path=signup_url, data=duplicate_email_data)
         except IntegrityError:
             raise AssertionError(assert_msg)
         assert response.status_code == HTTPStatus.BAD_REQUEST, assert_msg
@@ -209,14 +198,14 @@ class TestUserRegistration:
         duplicate_username_data['email'] = valid_email_2
 
         assert_msg = (
-            f'Если POST-запрос, отправленный на эндпоинт `{url_signup}`, '
+            f'Если POST-запрос, отправленный на эндпоинт `{signup_url}`, '
             'содержит `username` зарегистрированного пользователя и '
             'несоответствующий ему `email` - должен вернуться ответ со '
             'статусом 400.'
         )
         try:
             response = client.post(
-                path=url_signup, data=duplicate_username_data
+                path=signup_url, data=duplicate_username_data
             )
         except IntegrityError:
             raise AssertionError(assert_msg)
