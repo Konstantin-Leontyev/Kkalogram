@@ -4,8 +4,8 @@ from sqlite3 import IntegrityError
 import pytest
 
 from .utils import (check_for_bad_request, check_for_created,
-                    check_for_page_found,
-                    invalid_data_for_required_fields)
+                    check_for_new_user_exists, check_for_page_found,
+                    check_for_valid_response, invalid_data_for_required_fields)
 
 
 @pytest.mark.django_db(transaction=True)
@@ -41,7 +41,7 @@ class TestUserRegistration:
         response = client.post(path=signup_url, data=blank_data)
 
         check_for_page_found(response=response, url=signup_url)
-        check_for_bad_request(response=response, url=signup_url)
+        check_for_bad_request(response=response, url=signup_url, msg_modifier='администратором ')
 
         assert users_count == django_user_model.objects.count(), (
             f'Проверьте, что POST-запрос к `{signup_url}` с '
@@ -88,7 +88,7 @@ class TestUserRegistration:
             )
 
     def test_04_no_required_data_signup(self, client, django_user_model,
-                                        fields, valid_data, signup_url):
+                                        fields, signup_url, valid_data):
         users_count = django_user_model.objects.count()
 
         for field in fields:
@@ -114,31 +114,24 @@ class TestUserRegistration:
                                        valid_data, signup_url):
         valid_response = {
             'id': 1,
-            'email': 'valid@foodgram.ru',
+            'email': 'valid_email@foodgram.ru',
             'first_name': 'valid_name',
             'last_name': 'valid_surname',
             'username': 'valid_username'
         }
-
         response = client.post(path=signup_url, data=valid_data)
 
         check_for_page_found(response=response, url=signup_url)
         check_for_created(response=response, url=signup_url)
 
-        assert response.json() == valid_response, (
-            'POST-запрос с корректными данными, отправленный на эндпоинт '
-            f'`{signup_url}`, должен вернуть ответ, содержащий '
-            'информацию о `id`, `email`, `first_name`, `last_name`, и '
-            '`username` созданного пользователя.'
-        )
+        response_json = response.json()
+        check_for_valid_response(response=response_json,
+                                 valid_response=valid_response, url=signup_url)
 
         new_user = django_user_model.objects.filter(
             email=valid_data['email']
         )
-        assert new_user.exists(), (
-            'POST-запрос с корректными данными, отправленный на эндпоинт '
-            f'`{signup_url}`, должен создать нового пользователя.'
-        )
+        check_for_new_user_exists(new_user=new_user, url=signup_url)
         new_user.delete()
 
     @pytest.mark.parametrize(
@@ -161,7 +154,7 @@ class TestUserRegistration:
         )
 
     def test_07_registration_me_username_restricted(self, client,
-                                                    valid_data, signup_url):
+                                                    signup_url, valid_data, ):
         me_data = valid_data.copy()
         me_data['username'] = 'me'
         response = client.post(path=signup_url, data=me_data)
@@ -172,8 +165,8 @@ class TestUserRegistration:
         )
 
     def test_08_registration_same_email_and_username_restricted(self, client,
-                                                                valid_data,
-                                                                signup_url):
+                                                                signup_url,
+                                                                valid_data):
         valid_email_2 = 'test_duplicate_2@yamdb.fake'
         valid_username_2 = 'valid_username_2'
 

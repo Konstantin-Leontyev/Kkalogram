@@ -194,7 +194,7 @@ invalid_data_for_required_fields = [
 ]
 
 
-def check_for_page_found(response, url, username=None, search=None):
+def check_for_page_found(response, url, username=None, search=False):
     if username:
         assert response.status_code != HTTPStatus.NOT_FOUND, (
             f'Эндпоинт `{url}'
@@ -211,36 +211,53 @@ def check_for_page_found(response, url, username=None, search=None):
     )
 
 
-def check_for_bad_request(response, url):
+def check_for_bad_request(response, url, msg_modifier=''):
     assert response.status_code == HTTPStatus.BAD_REQUEST, (
-        f'Если POST-запрос, отправленный на эндпоинт `{url}`, '
+        f'Если POST-запрос, отправленный {msg_modifier}на эндпоинт `{url}`, '
         'не содержит необходимых данных, должен вернуться ответ со '
         'статусом 400.'
     )
 
 
-def check_for_created(response, url):
+def check_for_created(response, url, msg_modifier=''):
     assert response.status_code == HTTPStatus.CREATED, (
-        'POST-запрос с корректными данными, отправленный на эндпоинт '
+        f'POST-запрос {msg_modifier}с корректными данными, отправленный на эндпоинт '
         f'`{url}`, должен вернуть ответ со статусом 201.'
     )
 
 
-def check_for_token_request(response, url):
+def check_for_valid_response(response, valid_response, url, msg_modifier=''):
+    assert response == valid_response, (
+        f'POST-запрос {msg_modifier}с корректными данными, отправленный на эндпоинт '
+        f'`{url}`, должен вернуть ответ, содержащий '
+        'информацию о `id`, `email`, `first_name`, `last_name`, и '
+        '`username` созданного пользователя.'
+    )
+
+
+def check_for_token_request(response, url, msg_modifier=''):
     assert response.status_code == HTTPStatus.OK, (
-        f'Проверьте, что GET-запрос к `{url}` с токеном '
+        f'Проверьте, что GET-запрос {msg_modifier}к `{url}` с токеном '
         'авторизации возвращает ответ со статусом 200.'
     )
 
 
-def check_for_no_token_request(response, url):
+def check_for_no_token_request(response, url, msg_modifier=''):
     assert response.status_code == HTTPStatus.UNAUTHORIZED, (
-        f'Проверьте, что GET-запрос к `{url}` без токена '
+        f'Проверьте, что GET-запрос {msg_modifier}к `{url}` без токена '
         'авторизации возвращается ответ со статусом 401.'
     )
 
 
-def check_pagination(expected_count, response, url, post_data=None):
+def check_for_new_user_exists(new_user, url, msg_modifier=''):
+    assert new_user.exists(), (
+        f'POST-запрос {msg_modifier}с корректными данными, '
+        f'отправленный на эндпоинт `{url}`, '
+        'должен создать нового пользователя.'
+    )
+
+
+def check_pagination(expected_count, response, url, post_data=''):
     expected_keys = ('count', 'next', 'previous', 'results')
     for key in expected_keys:
         assert key in response, (

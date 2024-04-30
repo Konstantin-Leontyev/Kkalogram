@@ -48,7 +48,7 @@ def blank_data():
 @pytest.fixture
 def valid_data():
     return {
-        'email': 'valid@foodgram.ru',
+        'email': 'valid_email@foodgram.ru',
         'first_name': 'valid_name',
         'last_name': 'valid_surname',
         'password': '45wef1dE(',

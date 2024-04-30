@@ -5,7 +5,8 @@ import pytest
 from .utils import (check_for_bad_request, check_for_created,
                     check_for_page_found,
                     check_for_no_token_request,
-                    invalid_data_for_required_fields, check_pagination, check_for_token_request)
+                    invalid_data_for_required_fields, check_pagination, check_for_token_request,
+                    check_for_valid_response, check_for_new_user_exists)
 #
 # from tests.utils import (
 #     check_pagination, invalid_data_for_user_patch_and_creation
@@ -67,19 +68,22 @@ class Test02UserAPI:
 
         check_for_page_found(response=response, url=users_url,
                              username=admin.username)
-        check_for_no_token_request(response=response, url=users_url)
+        check_for_no_token_request(response=response, url=users_url,
+                                   msg_modifier='администратора ')
 
     def test_02_users_me_not_authenticated(self, client, users_me_url):
         response = client.get(path=users_me_url)
 
         check_for_page_found(response=response, url=users_me_url)
-        check_for_no_token_request(response=response, url=users_me_url)
+        check_for_no_token_request(response=response, url=users_me_url,
+                                   msg_modifier='администратора ')
 
     def test_03_users_get_admin(self, admin, admin_client, users_url):
         response = admin_client.get(path=users_url)
 
         check_for_page_found(response=response, url=users_url)
-        check_for_token_request(response=response, url=users_url)
+        check_for_token_request(response=response, url=users_url,
+                                msg_modifier='администратора ')
 
         data = response.json()
         admin_data = {
@@ -139,11 +143,8 @@ class Test02UserAPI:
         response = admin_client.post(users_url)
 
         check_for_page_found(response=response, url=users_url)
-        assert response.status_code == HTTPStatus.BAD_REQUEST, (
-            f'Если POST-запрос администратора к `{users_url}` '
-            'не содержит необходимых данных - должен вернуться ответ со '
-            'статусом 400.'
-        )
+        check_for_bad_request(response=response, url=users_url,
+                              msg_modifier='администратором ')
 
     def test_06_users_post_admin_blank_data(self, admin_client, blank_data,
                                             django_user_model, fields, users_url):
@@ -152,7 +153,8 @@ class Test02UserAPI:
         response = admin_client.post(path=users_url, data=blank_data)
 
         check_for_page_found(response=response, url=users_url)
-        check_for_bad_request(response=response, url=users_url)
+        check_for_bad_request(response=response, url=users_url,
+                              msg_modifier='администратором ')
 
         assert users_count == django_user_model.objects.count(), (
             f'Проверьте, что POST-запрос администратора к `{users_url}` с '
@@ -178,7 +180,8 @@ class Test02UserAPI:
         response = admin_client.post(path=users_url, data=invalid_data)
 
         check_for_page_found(response=response, url=users_url)
-        check_for_bad_request(response=response, url=users_url)
+        check_for_bad_request(response=response, url=users_url,
+                              msg_modifier='администратором ')
 
         assert users_count == django_user_model.objects.count(), (
             f'Проверьте, что POST-запрос администратора к `{users_url}` с '
@@ -211,7 +214,8 @@ class Test02UserAPI:
             response = admin_client.post(path=users_url, data=no_field_data)
 
             check_for_page_found(response=response, url=users_url)
-            check_for_bad_request(response=response, url=users_url)
+            check_for_bad_request(response=response, url=users_url,
+                                  msg_modifier='администратором ')
 
             assert users_count == django_user_model.objects.count(), (
                 f'Проверьте, что POST-запрос к `{users_url}` с '
@@ -228,8 +232,7 @@ class Test02UserAPI:
     )
     def test_09_users_post_admin_invalid_data(self, admin_client, data,
                                               django_user_model,
-                                              message,
-                                              users_url):
+                                              message, users_url):
         users_count = django_user_model.objects.count()
 
         response = admin_client.post(path=users_url, data=data)
@@ -245,33 +248,33 @@ class Test02UserAPI:
             'содержанию - новый пользователь не должен быть создан.'
         )
 
+    def test_05_users_post_admin_valid_data(self, admin_client,
+                                            django_user_model, valid_data,
+                                            users_url):
+        valid_response = {
+            'id': 21,
+            'email': 'valid_email@foodgram.ru',
+            'first_name': 'valid_name',
+            'last_name': 'valid_surname',
+            'username': 'valid_username'
+        }
+        response = admin_client.post(users_url, data=valid_data)
 
+        check_for_created(response=response, url=users_url,
+                          msg_modifier='администратора ')
 
+        response_json = response.json()
+        check_for_valid_response(response=response_json,
+                                 msg_modifier='администратора ',
+                                 valid_response=valid_response, url=users_url)
 
-#
-#
-#     @pytest.mark.parametrize('data,msg_modifier', VALID_DATA_FOR_USER_CREATION)
-#     def test_05_02_users_post_admin_user_creation(self, admin_client,
-#                                                   data, msg_modifier,
-#                                                   django_user_model):
-#         response = admin_client.post(self.USERS_URL, data=data)
-#         assert response.status_code == HTTPStatus.CREATED, (
-#             f'Если POST-запрос администратора к `{self.USERS_URL}` содержит '
-#             f'корректные данные {msg_modifier}- должен вернуться ответ со '
-#             'статусом 201.'
-#         )
-#         new_user = django_user_model.objects.filter(email=data['email'])
-#         assert new_user.exists(), (
-#             'Если POST-запрос администратора, отправленный к '
-#             f'`{self.USERS_URL}`, содержит корректные данные {msg_modifier}- '
-#             'должен быть создан новый пользователь.'
-#         )
-#         if msg_modifier:
-#             assert new_user.first().role == 'user', (
-#                 'Когда администратор создаёт пользователя через POST-запрос к '
-#                 f'`{self.USERS_URL}` и не указывает роль для нового '
-#                 'пользователя - пользователю должна присваиваться роль `user`.'
-#             )
+        new_user = django_user_model.objects.filter(
+            email=valid_data['email']
+        )
+        check_for_new_user_exists(new_user=new_user, url=users_url,
+                                  msg_modifier='администратора ')
+        new_user.delete()
+
 #
 #     def test_05_03_users_post_response_has_data(self, admin_client):
 #         data = {
