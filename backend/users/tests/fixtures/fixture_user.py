@@ -57,6 +57,17 @@ def valid_data():
 
 
 @pytest.fixture
+def valid_response():
+    return {
+        'id': 1,
+        'email': 'valid_email@foodgram.ru',
+        'first_name': 'valid_name',
+        'last_name': 'valid_surname',
+        'username': 'valid_username'
+    }
+
+
+@pytest.fixture
 def invalid_data():
     return {
         'email': 'invalid_email',
@@ -116,7 +127,7 @@ def superuser_token(superuser):
 
 
 @pytest.fixture
-def user_superuser_client(superuser_token):
+def superuser_client(superuser_token):
     client = APIClient()
     client.credentials(
         HTTP_AUTHORIZATION=f'Bearer {superuser_token["access"]}'
@@ -144,7 +155,8 @@ def user_token(user):
 
 
 @pytest.fixture
-def user_client(token_user):
+def user_client(user_token):
     client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token_user["access"]}')
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {user_token["access"]}')
     return client
+

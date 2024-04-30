@@ -62,7 +62,6 @@ class Test02UserAPI:
     #             'ответ со статусом 403.'
     #         )
 
-
     def test_01_users_username_not_authenticated(self, admin, client, users_url):
         response = client.get(path=f'{users_url}{admin.username}/')
 
@@ -139,7 +138,7 @@ class Test02UserAPI:
 #         )
 #
 
-    def test_05_users_post_admin_empty_data(self, admin, admin_client, users_url):
+    def test_05_users_post_admin_empty_data(self, admin_client, users_url):
         response = admin_client.post(users_url)
 
         check_for_page_found(response=response, url=users_url)
@@ -248,9 +247,8 @@ class Test02UserAPI:
             'содержанию - новый пользователь не должен быть создан.'
         )
 
-    def test_05_users_post_admin_valid_data(self, admin_client,
-                                            django_user_model, valid_data,
-                                            users_url):
+    def test_10_users_post_admin_create_user(self, admin_client, django_user_model,
+                                             valid_data, users_url):
         valid_response = {
             'id': 21,
             'email': 'valid_email@foodgram.ru',
@@ -258,6 +256,7 @@ class Test02UserAPI:
             'last_name': 'valid_surname',
             'username': 'valid_username'
         }
+
         response = admin_client.post(users_url, data=valid_data)
 
         check_for_created(response=response, url=users_url,
@@ -275,95 +274,45 @@ class Test02UserAPI:
                                   msg_modifier='администратора ')
         new_user.delete()
 
-#
-#     def test_05_03_users_post_response_has_data(self, admin_client):
-#         data = {
-#             'first_name': 'First Name',
-#             'last_name': 'Last Name',
-#             'username': 'test_username',
-#             'bio': 'test bio',
-#             'role': 'moderator',
-#             'email': 'testmoder2@yamdb.fake'
-#         }
-#         response = admin_client.post(self.USERS_URL, data=data)
-#         assert response.status_code == HTTPStatus.CREATED, (
-#             f'Если POST-запрос администратора к `{self.USERS_URL}` '
-#             'содержит корректные данные - должен вернуться ответ со статусом '
-#             '201.'
-#         )
-#         response_data = response.json()
-#         expected_keys = (
-#             'first_name', 'last_name', 'username', 'bio', 'role', 'email'
-#         )
-#         for key in expected_keys:
-#             assert response_data.get(key) == data[key], (
-#                 f'Если POST-запрос к `{self.USERS_URL}` содержит корректные '
-#                 'данные - в ответе должны содержаться данные нового '
-#                 f'пользователя. Сейчас ключ {key} отстутствует либо содержит '
-#                 'некорректные данные.'
-#             )
-#
-#     def test_05_04_users_post_user_superuser(self, user_superuser_client,
-#                                              django_user_model):
-#         valid_data = {
-#             'username': 'TestUser_3',
-#             'role': 'user',
-#             'email': 'testuser3@yamdb.fake'
-#         }
-#         response = user_superuser_client.post(
-#             self.USERS_URL, data=valid_data
-#         )
-#         assert response.status_code == HTTPStatus.CREATED, (
-#             f'Если POST-запрос суперпользователя к `{self.USERS_URL}` '
-#             'содержит корректные данные - должен вернуться ответ со статусом '
-#             '201.'
-#         )
-#         users_after = (
-#             django_user_model.objects.filter(email=valid_data['email'])
-#         )
-#         assert users_after.exists(), (
-#             f'Если POST-запрос суперпользователя к `{self.USERS_URL}` '
-#             'содержит корректные данные - должен быть создан новый '
-#             'пользователь.'
-#         )
-#
-#     def test_06_users_username_get_admin(self, admin_client, moderator):
-#         response = admin_client.get(f'{self.USERS_URL}{moderator.username}/')
-#         assert response.status_code != HTTPStatus.NOT_FOUND, (
-#             f'Эндпоинт `{self.USERS_URL}'
-#             '{username}/` не найден. Проверьте настройки в *urls.py*.'
-#         )
-#         assert response.status_code == HTTPStatus.OK, (
-#             f'Проверьте, что GET-запрос администратора к `{self.USERS_URL}'
-#             '{username}/` возвращает ответ со статусом 200.'
-#         )
-#
-#         response_data = response.json()
-#         expected_keys = (
-#             'first_name', 'last_name', 'username', 'bio', 'role', 'email'
-#         )
-#         for key in expected_keys:
-#             assert response_data.get(key) == getattr(moderator, key), (
-#                 'Проверьте, что ответ на GET-запрос администратора к '
-#                 f'`{self.USERS_URL}'
-#                 '{username}/` содержит данные пользователя.'
-#                 f'Сейчас ключ {key} отсутствует в ответе либо содержит '
-#                 'некорректные данные.'
-#             )
-#
-#     def test_06_users_username_get_not_admin(self, user_client,
-#                                              moderator_client, admin):
-#         for test_client in (user_client, moderator_client):
-#             response = test_client.get(f'{self.USERS_URL}{admin.username}/')
-#             assert response.status_code != HTTPStatus.NOT_FOUND, (
-#                 f'Эндпоинт `{self.USERS_URL}'
-#                 '{username}/` не найден. Проверьте настройки в *urls.py*.'
-#             )
-#             assert response.status_code == HTTPStatus.FORBIDDEN, (
-#                 'GET-запрос пользователя, не обладающего правами '
-#                 f'администратора, отправленный к `{self.USERS_URL}'
-#                 '{username}/`, должен вернуть ответ со статусом 403.'
-#             )
+    def test_11_users_post_superuser_create_user(self, django_user_model,
+                                                 superuser_client, valid_data,
+                                                 users_url):
+        valid_response = {
+            'id': 23,
+            'email': 'valid_email@foodgram.ru',
+            'first_name': 'valid_name',
+            'last_name': 'valid_surname',
+            'username': 'valid_username'
+        }
+
+        response = superuser_client.post(users_url, data=valid_data)
+
+        check_for_created(response=response, url=users_url,
+                          msg_modifier='суперпользователя ')
+
+        response_json = response.json()
+        check_for_valid_response(response=response_json,
+                                 msg_modifier='суперпользователя ',
+                                 valid_response=valid_response, url=users_url)
+
+        new_user = django_user_model.objects.filter(
+            email=valid_data['email']
+        )
+        check_for_new_user_exists(new_user=new_user, url=users_url,
+                                  msg_modifier='суперпользователя ')
+        new_user.delete()
+
+    def test_06_users_username_get_not_staff(self, admin_client, user_client,
+                                             admin, users_url):
+        for test_client in (admin_client, user_client):
+            response = test_client.get(f'{users_url}{admin.username}/')
+
+            check_for_page_found(response=response, url=users_url)
+            assert response.status_code == HTTPStatus.FORBIDDEN, (
+                'GET-запрос пользователя, не обладающего правами '
+                f'администратора, отправленный к `{users_url}'
+                '{username}/`, должен вернуть ответ со статусом 403.'
+            )
 #
 #     def test_07_01_users_username_patch_admin(self, user, admin_client,
 #                                               django_user_model):
