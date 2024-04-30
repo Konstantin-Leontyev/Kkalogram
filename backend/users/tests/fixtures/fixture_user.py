@@ -4,6 +4,16 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 
 @pytest.fixture
+def url_signup():
+    return '/api/users/'
+
+
+@pytest.fixture
+def url_token():
+    return '/api/auth/token/'
+
+
+@pytest.fixture
 def fields():
     return [
         'email',
@@ -17,11 +27,11 @@ def fields():
 @pytest.fixture
 def valid_data():
     return {
-        'email': 'valid@yamdb.fake',
-        'username': 'valid_username',
-        'last_name': 'username',
-        'first_name': 'valid',
-        'password': '1dE(45wef'
+        'email': 'valid@foodgram.ru',
+        'first_name': 'valid_name',
+        'last_name': 'valid_surname',
+        'password': '1dE(45wef',
+        'username': 'valid_username'
     }
 
 
@@ -39,7 +49,7 @@ def invalid_data():
 @pytest.fixture
 def user(django_user_model):
     return django_user_model.objects.create_user(
-        email='testuser@yamdb.fake',
+        email='testuser@foodgram.ru',
         first_name='name',
         last_name='surname',
         password='1234567',

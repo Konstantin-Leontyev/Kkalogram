@@ -54,7 +54,7 @@ class UppercaseValidator(object):
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
     def validate(self, password, user=None):
-        """Raises error if password has no at least one letter in upper case."""
+        """Raises error if password does not contain letter in upper case."""
         if not re.findall(r'[A-Z]', password):
             raise ValidationError(
                 message='Пароль должен содержать как минимум '
@@ -83,7 +83,7 @@ class LowercaseValidator(object):
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
     def validate(self, password, user=None):
-        """Raises error if password has no at least one letter in lower case."""
+        """Raises error if password does not contain letter in lower case."""
         if not re.findall('[a-z]', password):
             raise ValidationError(
                 message='Пароль должен содержать как минимум '
@@ -112,7 +112,7 @@ class SymbolValidator(object):
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
     def validate(self, password, user=None):
-        """Raises error if password has no at least one symbol."""
+        """Raises error if password does not contain symbol."""
         if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
             raise ValidationError(
                 message='Пароль должен содержать как минимуму один символ: '
