@@ -52,6 +52,6 @@ assert dotenv_version == required_dotenv_version, (
     f'Пожалуйста, используйте версию djoser {required_dotenv_version}'
 )
 
-# pytest_plugins = [
-#     'fixtures.fixture_user',
-# ]
+pytest_plugins = [
+    'users.tests.fixtures.fixture_user',
+]
