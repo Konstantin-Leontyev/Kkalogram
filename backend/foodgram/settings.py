@@ -83,8 +83,10 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'djoser',
-    'users.apps.UsersConfig',
     'followers.apps.FollowersConfig',
+    'tags.apps.TagsConfig',
+    'users.apps.UsersConfig',
+
 ]
 
 LANGUAGE_CODE = 'ru-RU'

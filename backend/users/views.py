@@ -1,11 +1,12 @@
 from djoser.conf import settings
 from djoser.views import UserViewSet
 
-from backend.users.serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer
 
 
 class CustomUserViewSet(UserViewSet):
-    """Describes custom user view."""
+    """Describes custom user view set."""
+
     serializer_class = CustomUserSerializer
     search_fields = ('email', 'username',)
 

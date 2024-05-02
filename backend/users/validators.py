@@ -19,7 +19,7 @@ def me_value_username_validator(username: str):
 class NumberValidator(object):
     """
     Custom user password field validator.
-     Check password got at least one number.
+    Check password got at least one number.
 
     .. Note:: To use validator set dict:
     {
@@ -28,6 +28,7 @@ class NumberValidator(object):
 
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
+
     def validate(self, password, user=None):
         """Raises error if password has no at least one number."""
         if not re.findall(r'\d', password):
@@ -53,6 +54,7 @@ class UppercaseValidator(object):
 
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
+
     def validate(self, password, user=None):
         """Raises error if password does not contain letter in upper case."""
         if not re.findall(r'[A-Z]', password):
@@ -82,6 +84,7 @@ class LowercaseValidator(object):
 
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
+
     def validate(self, password, user=None):
         """Raises error if password does not contain letter in lower case."""
         if not re.findall('[a-z]', password):
@@ -111,6 +114,7 @@ class SymbolValidator(object):
 
     into AUTH_PASSWORD_VALIDATORS list in Django project settings.py
     """
+
     def validate(self, password, user=None):
         """Raises error if password does not contain symbol."""
         if not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):

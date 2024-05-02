@@ -6,7 +6,7 @@ from .validators import me_value_username_validator, unicode_username_validator
 
 
 class User(AbstractUser):
-    """Describes user model."""
+    """Describes user model class."""
 
     email = EmailField(
         verbose_name='Адрес электронной почты',
@@ -40,6 +40,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
 
     class Meta:
+        """Describes custom user model metaclass."""
+
         default_related_name = 'users'
         ordering = ('username', 'email')
         verbose_name = 'Пользователя'
