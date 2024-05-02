@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class Follow(Model):
-    """Describes follow model."""
+    """Describes follow model class."""
 
     user = ForeignKey(
         User,
@@ -22,6 +22,8 @@ class Follow(Model):
     )
 
     class Meta:
+        """Describes follow model metaclass."""
+
         constraints = [
             UniqueConstraint(
                 fields=['user', 'author'],

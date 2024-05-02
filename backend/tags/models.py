@@ -4,7 +4,7 @@ from .constants import COLOR_CHOICES
 
 
 class Tag(Model):
-    """Describes tag model."""
+    """Describes tag model class."""
 
     name = CharField(
         max_length=10,
@@ -23,5 +23,7 @@ class Tag(Model):
         verbose_name='Слаг')
 
     class Meta:
+        """Describes tag model metaclass."""
+
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'

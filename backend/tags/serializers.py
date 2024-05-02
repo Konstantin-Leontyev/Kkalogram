@@ -4,8 +4,10 @@ from .models import Tag
 
 
 class TagSerializer(ModelSerializer):
-    """Describes tag serializer."""
+    """Describes tag serializer class."""
 
     class Meta:
+        """Describes tag serializer metaclass."""
+
         model = Tag
         fields = '__all__'
