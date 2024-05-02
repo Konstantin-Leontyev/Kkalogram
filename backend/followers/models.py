@@ -6,6 +6,8 @@ User = get_user_model()
 
 
 class Follow(Model):
+    """Describes follow model."""
+
     user = ForeignKey(
         User,
         on_delete=CASCADE,

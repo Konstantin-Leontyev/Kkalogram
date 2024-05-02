@@ -1,0 +1,14 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from .models import Tag
+from .serializers import TagSerializer
+
+
+class TagsViewSet(ReadOnlyModelViewSet):
+    """Describes readonly tag view set."""
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = None
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

@@ -6,6 +6,8 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+    """User model admin site registration class."""
+
     list_display = (
         'username',
         'email',
@@ -16,6 +18,3 @@ class UserAdmin(admin.ModelAdmin):
     )
     search_fields = ('email', 'username')
     list_filter = ('is_active', 'is_staff',)
-
-
-admin.site.empty_value_display = 'Значение не задано'

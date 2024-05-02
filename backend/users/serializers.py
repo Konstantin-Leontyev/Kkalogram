@@ -1,10 +1,11 @@
 from djoser.serializers import UserSerializer
 from followers.models import Follow
-from rest_framework import serializers
+from rest_framework.serializers import SerializerMethodField
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    """Describes custom user serializer"""
+    is_subscribed = SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         fields = ('is_subscribed', *UserSerializer.Meta.fields)
