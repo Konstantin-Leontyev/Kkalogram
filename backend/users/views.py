@@ -1,10 +1,17 @@
-# from djoser.views import UserViewSet
-# from rest_framework.filters import SearchFilter
-#
-# from backend.users.serializers import CustomUserCreateSerializer
-#
-#
-# class CustomUserCreateViewSet(UserViewSet):
-#     serializer_class = CustomUserCreateSerializer
-#     filter_backends = (SearchFilter,)
-#     search_fields = ('email', 'username',)
+from djoser.conf import settings
+from djoser.views import UserViewSet
+
+from backend.users.serializers import CustomUserSerializer
+
+
+class CustomUserViewSet(UserViewSet):
+    """Describes custom user view."""
+    serializer_class = CustomUserSerializer
+    search_fields = ('email', 'username',)
+
+    def get_permissions(self):
+        """Add custom permission for get requests on users/me endpoint."""
+        if (self.action == 'me' and self.request
+                and self.request.method == 'GET'):
+            self.permission_classes = settings.PERMISSIONS.token_destroy
+        return super().get_permissions()

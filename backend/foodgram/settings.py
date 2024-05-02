@@ -21,18 +21,18 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    {
-        'NAME': 'users.validators.NumberValidator',
-    },
-    {
-        'NAME': 'users.validators.UppercaseValidator',
-    },
-    {
-        'NAME': 'users.validators.LowercaseValidator',
-    },
-    {
-        'NAME': 'users.validators.SymbolValidator',
-    },
+    # {
+    #     'NAME': 'users.validators.NumberValidator',
+    # },
+    # {
+    #     'NAME': 'users.validators.UppercaseValidator',
+    # },
+    # {
+    #     'NAME': 'users.validators.LowercaseValidator',
+    # },
+    # {
+    #     'NAME': 'users.validators.SymbolValidator',
+    # },
 ]
 
 AUTH_USERNAME_VALIDATORS = [
@@ -63,16 +63,11 @@ DJOSER = {
     'HIDE_USERS': False,
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
-        # "recipe": ("api.permissions.IsAdminUser,",),
-        # "recipe_list": ("api.permissions.IsAdminUser",),
-        'user': ('rest_framework.permissions.IsAuthenticated',),
-        'user_list': ('rest_framework.permissions.AllowAny',)
+        'user': ('rest_framework.permissions.AllowAny',),
+        'user_list': ('rest_framework.permissions.AllowAny',),
     },
     "SERIALIZERS": {
-        'user': 'users.serializers.CustomUserCreateSerializer',
-        'user_list': 'users.serializers.CustomUserCreateSerializer',
-        'current_user': 'users.serializers.CustomUserCreateSerializer',
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
     },
 }
 
@@ -89,6 +84,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'users.apps.UsersConfig',
+    'followers.apps.FollowersConfig',
 ]
 
 LANGUAGE_CODE = 'ru-RU'
@@ -108,12 +104,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DEFAULT_FILTER_BACKENDS': [
-    #     # 'django_filters.rest_framework.DjangoFilterBackend',
-    #     'rest_framework.filters.SearchFilter',
-    # ],
+    'DEFAULT_FILTER_BACKENDS': [
+        # 'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 5,
+    'PAGE_SIZE': 6,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],

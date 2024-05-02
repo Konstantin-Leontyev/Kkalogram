@@ -1,33 +1,34 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db.models import CharField, EmailField
 
-from .constants import USERNAME_MAX_LENGTH
+from .constants import NAME_FIELDS_MAX_LENGTH
 from .validators import me_value_username_validator, unicode_username_validator
 
 
 class User(AbstractUser):
     """Describes user model."""
 
-    email = models.EmailField(
-        'Адрес электронной почты',
-        unique=True,
+    email = EmailField(
+        verbose_name='Адрес электронной почты',
+        unique=True
     )
-    first_name = models.CharField(
-        'Имя',
-        max_length=USERNAME_MAX_LENGTH,
+    first_name = CharField(
+        verbose_name='Имя',
+        max_length=NAME_FIELDS_MAX_LENGTH
     )
-    last_name = models.CharField(
-        'Фамилия',
-        max_length=USERNAME_MAX_LENGTH,
+    last_name = CharField(
+        verbose_name='Фамилия',
+        max_length=NAME_FIELDS_MAX_LENGTH
     )
-    username = models.CharField(
-        'Имя пользователя',
-        max_length=USERNAME_MAX_LENGTH,
+    username = CharField(
+        verbose_name='Имя пользователя',
+        max_length=NAME_FIELDS_MAX_LENGTH,
         unique=True,
         validators=[
             me_value_username_validator,
             unicode_username_validator,
-        ])
+        ]
+    )
 
     REQUIRED_FIELDS = [
         'first_name',
