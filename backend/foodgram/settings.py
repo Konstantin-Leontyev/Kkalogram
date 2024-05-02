@@ -64,7 +64,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
         'user': ('rest_framework.permissions.AllowAny',),
-        'user_list': ('rest_framework.permissions.AllowAny',)
+        'user_list': ('rest_framework.permissions.AllowAny',),
     },
     "SERIALIZERS": {
         'current_user': 'users.serializers.CustomUserSerializer',
@@ -104,12 +104,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DEFAULT_FILTER_BACKENDS': [
-    #     # 'django_filters.rest_framework.DjangoFilterBackend',
-    #     'rest_framework.filters.SearchFilter',
-    # ],
+    'DEFAULT_FILTER_BACKENDS': [
+        # 'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 5,
+    'PAGE_SIZE': 6,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
