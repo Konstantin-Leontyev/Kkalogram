@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'followers.apps.FollowersConfig',
+    'ingredients.apps.IngredientsConfig',
     'tags.apps.TagsConfig',
     'users.apps.UsersConfig',
 
@@ -113,7 +114,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 6,
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 }
 

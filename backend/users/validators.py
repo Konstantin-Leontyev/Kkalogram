@@ -12,7 +12,8 @@ def me_value_username_validator(username: str):
         raise ValidationError(
             message='Использование me '
                     'в качестве имени пользователя недопустимо',
-            params={'username': username}
+            params={'username': username},
+            code='me restricted using',
         )
 
 
@@ -34,7 +35,7 @@ class NumberValidator(object):
         if not re.findall(r'\d', password):
             raise ValidationError(
                 message='Пароль должен содержать как минимум одну цифру.',
-                code='password_no_number',
+                code='password no number',
             )
 
     def get_help_text(self):
@@ -61,7 +62,7 @@ class UppercaseValidator(object):
             raise ValidationError(
                 message='Пароль должен содержать как минимум '
                         'одну латинскую букву в верхнем регистре.',
-                code='password_no_upper',
+                code='password no upper',
             )
 
     def get_help_text(self):
@@ -91,7 +92,7 @@ class LowercaseValidator(object):
             raise ValidationError(
                 message='Пароль должен содержать как минимум '
                         'одну латинскую букву в нижнем регистре.',
-                code='password_no_lower',
+                code='password no lower',
             )
 
     def get_help_text(self):
@@ -121,7 +122,7 @@ class SymbolValidator(object):
             raise ValidationError(
                 message='Пароль должен содержать как минимуму один символ: '
                         r'()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?',
-                code='password_no_symbol',
+                code='password no symbol',
             )
 
     def get_help_text(self):
