@@ -1,13 +1,13 @@
-# from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from .filters import IngredientFilter
 from .models import Ingredient
 from .serializers import IngredientSerializer
 
 
 class IngredientsViewSet(ReadOnlyModelViewSet):
-    # permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    # filter_backends = [IngredientSearchFilter]
+    pagination_class = None
+    filter_backends = [IngredientFilter]
     search_fields = ['name']
+    serializer_class = IngredientSerializer
+    queryset = Ingredient.objects.all()
