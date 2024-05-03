@@ -2,7 +2,6 @@ GREEN = '#008000'
 ORANGE = '#FFA500'
 RED = '#FF0000'
 
-
 COLOR_CHOICES = [
     (GREEN, 'Зеленый'),
     (ORANGE, 'Оранжевый'),
@@ -11,7 +10,7 @@ COLOR_CHOICES = [
 
 BREAKFAST = 'Завтрак'
 LUNCH = 'Обед'
-DINNER = 'Полдник'
+DINNER = 'Ужин'
 
 NAME_CHOICES = [
     (BREAKFAST, 'Завтрак'),
