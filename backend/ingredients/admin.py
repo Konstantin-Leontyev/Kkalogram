@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Ingredient
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    """Tag model admin site registration class."""
+
+    list_display = ['name', 'measurement_unit']
+    list_filter = ['name']

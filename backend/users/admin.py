@@ -8,13 +8,13 @@ User = get_user_model()
 class UserAdmin(admin.ModelAdmin):
     """User model admin site registration class."""
 
-    list_display = (
+    list_display = [
         'username',
         'email',
         'is_active',
         'is_staff',
         'last_login',
         'date_joined',
-    )
-    search_fields = ('email', 'username')
-    list_filter = ('is_active', 'is_staff')
+    ]
+    search_fields = ['email', 'username']
+    list_filter = ['is_active', 'is_staff']
