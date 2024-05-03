@@ -17,4 +17,4 @@ class UserAdmin(admin.ModelAdmin):
         'date_joined',
     )
     search_fields = ('email', 'username')
-    list_filter = ('is_active', 'is_staff',)
+    list_filter = ('is_active', 'is_staff')

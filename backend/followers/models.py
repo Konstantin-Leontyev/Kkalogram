@@ -12,13 +12,13 @@ class Follow(Model):
         User,
         on_delete=CASCADE,
         related_name='follower',
-        verbose_name='Подписчик'
+        verbose_name='Подписчик',
     )
     author = ForeignKey(
         User,
         on_delete=CASCADE,
         related_name='following',
-        verbose_name='Автор'
+        verbose_name='Автор',
     )
 
     class Meta:
@@ -27,11 +27,11 @@ class Follow(Model):
         constraints = [
             UniqueConstraint(
                 fields=['user', 'author'],
-                name='No duplicate subscription'
+                name='No duplicate subscription',
             ),
             CheckConstraint(
                 check=~Q(author=F("user")),
-                name='No self subscription'
+                name='No self subscription',
             ),
         ]
         verbose_name = 'Подписка'

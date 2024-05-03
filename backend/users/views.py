@@ -8,7 +8,7 @@ class CustomUserViewSet(UserViewSet):
     """Describes custom user view set."""
 
     serializer_class = CustomUserSerializer
-    search_fields = ('email', 'username',)
+    search_fields = ('email', 'username')
 
     def get_permissions(self):
         """Add custom permission for get requests on users/me endpoint."""

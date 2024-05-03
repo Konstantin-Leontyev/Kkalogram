@@ -8,7 +8,7 @@ from .serializers import TagSerializer
 class TagsViewSet(ReadOnlyModelViewSet):
     """Describes read only tag view set class."""
 
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = None
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
