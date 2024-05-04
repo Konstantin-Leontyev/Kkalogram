@@ -11,3 +11,4 @@ class TagSerializer(ModelSerializer):
 
         model = Tag
         fields = '__all__'
+        read_only_fields = ['__all__']

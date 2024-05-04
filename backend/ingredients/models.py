@@ -6,13 +6,13 @@ from .constants import MEASUREMENT_UNIT_MAX_LENGTH, NAME_FIELD_MAX_LENGTH
 class Ingredient(Model):
     """Describes ingredient model class."""
 
-    name = CharField(
-        max_length=NAME_FIELD_MAX_LENGTH,
-        verbose_name='Ингредиент',
-    )
     measurement_unit = CharField(
         max_length=MEASUREMENT_UNIT_MAX_LENGTH,
         verbose_name='Единица измерения',
+    )
+    name = CharField(
+        max_length=NAME_FIELD_MAX_LENGTH,
+        verbose_name='Ингредиент',
     )
 
     class Meta:

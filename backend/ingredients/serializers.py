@@ -11,3 +11,4 @@ class IngredientSerializer(ModelSerializer):
 
         model = Ingredient
         fields = '__all__'
+        read_only_fields = ['__all__']

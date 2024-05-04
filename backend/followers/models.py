@@ -8,17 +8,17 @@ User = get_user_model()
 class Follow(Model):
     """Describes follow model class."""
 
-    user = ForeignKey(
-        User,
-        on_delete=CASCADE,
-        related_name='follower',
-        verbose_name='Подписчик',
-    )
     author = ForeignKey(
         User,
         on_delete=CASCADE,
         related_name='following',
         verbose_name='Автор',
+    )
+    user = ForeignKey(
+        User,
+        on_delete=CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
     )
 
     class Meta:
