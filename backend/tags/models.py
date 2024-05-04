@@ -7,17 +7,17 @@ from .constants import (COLOR_CHOICES, NAME_CHOICES, SLUG_CHOICES,
 class Tag(Model):
     """Describes tag model class."""
 
-    name = CharField(
-        choices=NAME_CHOICES,
-        max_length=TAG_FIELDS_MAX_LENGTH,
-        unique=True,
-        verbose_name='Тег',
-    )
     color = CharField(
         choices=COLOR_CHOICES,
         max_length=TAG_FIELDS_MAX_LENGTH,
         unique=True,
         verbose_name='Цвет',
+    )
+    name = CharField(
+        choices=NAME_CHOICES,
+        max_length=TAG_FIELDS_MAX_LENGTH,
+        unique=True,
+        verbose_name='Тег',
     )
     slug = SlugField(
         choices=SLUG_CHOICES,

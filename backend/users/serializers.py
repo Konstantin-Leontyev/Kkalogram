@@ -11,6 +11,7 @@ class CustomUserSerializer(UserSerializer):
         """Describes custom user serializer metaclass."""
 
         fields = ('is_subscribed', *UserSerializer.Meta.fields)
+        read_only_fields = ['is_subscribed']
 
     def get_is_subscribed(self, obj):
         """Returns the user's subscription status."""

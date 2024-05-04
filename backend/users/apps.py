@@ -7,10 +7,10 @@ class UsersConfig(AppConfig):
 
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'users'
-    verbose_name = 'Пользователи'
+    verbose_name = 'Список пользователей'
 
 
 class UsersAuthConfig(AuthConfig):
     """Custom auth application configuration. For verbose name change only."""
 
-    verbose_name = 'Группы'
+    verbose_name = 'Список групп'

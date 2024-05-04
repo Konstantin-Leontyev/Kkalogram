@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'followers.apps.FollowersConfig',
+    'recipes.apps.RecipesConfig',
     'ingredients.apps.IngredientsConfig',
     'tags.apps.TagsConfig',
     'users.apps.UsersConfig',

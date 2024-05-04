@@ -5,7 +5,9 @@ from .models import Ingredient
 from .serializers import IngredientSerializer
 
 
-class IngredientsViewSet(ReadOnlyModelViewSet):
+class IngredientViewSet(ReadOnlyModelViewSet):
+    """Describes read only ingredient view set class."""
+
     pagination_class = None
     filter_backends = [IngredientFilter]
     search_fields = ['name']

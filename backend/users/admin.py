@@ -1,11 +1,11 @@
-from django.contrib import admin
+from django.contrib.admin import ModelAdmin, register
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@register(User)
+class UserAdmin(ModelAdmin):
     """User model admin site registration class."""
 
     list_display = [
