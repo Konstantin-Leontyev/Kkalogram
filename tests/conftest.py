@@ -6,7 +6,6 @@ from dotenv.main import load_dotenv
 from django import __version__ as django_version
 from djoser import __version__ as djoser_version
 from rest_framework import __version__ as rest_framework_version
-from rest_framework_simplejwt import __version__ as rest_framework_simplejwt_version
 
 load_dotenv()
 
@@ -31,7 +30,6 @@ for dir_name in (PROJECT_DIR_NAME,):
 
 required_django_version = '3.2.16'
 required_rest_framework_version = '3.12.4'
-required_framework_simplejwt_version = '4.7.2'
 required_djoser_version = '2.1.0'
 required_dotenv_version = '1.0.1'
 required_django_cors_headers = '3.13.0'
@@ -41,9 +39,6 @@ assert django_version == required_django_version, (
 )
 assert rest_framework_version == required_rest_framework_version, (
     f'Пожалуйста, используйте версию Django REST framework {required_rest_framework_version}'
-)
-assert rest_framework_simplejwt_version == required_framework_simplejwt_version,  (
-    f'Пожалуйста, используйте версию simplejwt {required_framework_simplejwt_version}'
 )
 assert djoser_version == required_djoser_version, (
     f'Пожалуйста, используйте версию djoser {required_djoser_version}'

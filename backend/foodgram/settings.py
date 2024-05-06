@@ -80,7 +80,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters',
+    # 'django_filters',
     'corsheaders',
     'djoser',
     'followers.apps.FollowersConfig',
