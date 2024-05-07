@@ -47,6 +47,6 @@ class User(AbstractUser):
         verbose_name = 'Пользователя'
         verbose_name_plural = 'Пользователи'
 
-    def __repr__(self):
+    def __str__(self):
         """Returns text representation of the class."""
         return self.get_full_name()

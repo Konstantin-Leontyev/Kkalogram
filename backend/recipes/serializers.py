@@ -3,18 +3,18 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from django.db.models import F
 
 from ingredients.models import Ingredient
-from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
-from .models import Recipe
+from .models import Recipe, RecipeIngredient
+from django.db.transaction import atomic
 
 
 class RecipeSerializer(ModelSerializer):
     """Describes Recipe serializer class."""
 
     image = Base64ImageField()
-    tags = TagSerializer(many=True)
-    author = CustomUserSerializer()
+    tags = TagSerializer(many=True, read_only=True)
+    author = CustomUserSerializer(read_only=True)
     ingredients = SerializerMethodField()
     # is_favorited = SerializerMethodField()
     # is_in_shopping_cart = SerializerMethodField()
@@ -25,32 +25,35 @@ class RecipeSerializer(ModelSerializer):
         """Describes Recipe serializer metaclass."""
 
         model = Recipe
-        # fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-        #           'is_in_shopping_cart', 'name', 'image', 'text',
-        #           'cooking_time')
         fields = '__all__'
+        read_only_fields = [
+            'is_favorited', 'is_in_shopping_cart']
 
     def get_ingredients(self, obj):
         """Ingredients get function."""
-        return obj.ingredients.values(
-            'id', 'name', 'measurement_unit', amount=F('ingredient__amount')
+        ingredients = obj.ingredients.values(
+            'id', 'name', 'measurement_unit', amount=F('recipe__amount')
         )
+        return ingredients
 
-    def validate(self, attrs):
-        tags = self.initial_data.get('tags')
-        ingredients = self.initial_data.get('ingredients')
+    def create_ingredients(self, ingredients, recipe):
+        for i in ingredients:
+            ingredient = Ingredient.objects.get(id=i['id'])
+            RecipeIngredient.objects.create(
+                ingredients=ingredient,
+                recipe=recipe,
+                amount=i['amount']
+            )
 
-        # if not tags_ids or not ingredients:
-        #     raise ValidationError("Недостаточно данных.")
+    @atomic
+    def create(self, validated_data):
+        author = self.context.get('request').user
+        validated_data.update({'author': author})
 
-        tags = Tag.objects.filter(id__in=tags)
-        ingredients = Ingredient.objects.filter(id__in=ingredients)
+        tags = self.initial_data.pop('tags')
+        ingredients = self.initial_data.pop('ingredients')
 
-        attrs.update(
-            {
-                'author': self.context.get('request').user,
-                'ingredients': ingredients,
-                'tags': tags,
-            }
-        )
-        return attrs
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.tags.set(tags)
+        self.create_ingredients(ingredients, recipe)
+        return recipe

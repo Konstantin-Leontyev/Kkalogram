@@ -8,7 +8,7 @@ from django.db.models import (SET_NULL, CASCADE, CharField, ForeignKey,
 from ingredients.models import Ingredient
 from tags.models import Tag
 
-from .constants import MIN_COOKING_TIME, NAME_FIELD_MAX_LENGTH
+from .constants import MIN_COOKING_TIME, MIN_INGREDIENT_VALUE, NAME_FIELD_MAX_LENGTH
 
 User = get_user_model()
 
@@ -37,8 +37,8 @@ class Recipe(Model):
     )
     ingredients = ManyToManyField(
         Ingredient,
-        # through='RecipeIngredient',
         verbose_name='Ингредиенты',
+        through='RecipeIngredient'
     )
     name = CharField(
         max_length=NAME_FIELD_MAX_LENGTH,
@@ -63,20 +63,26 @@ class Recipe(Model):
 class RecipeIngredient(Model):
     """Describes recipe ingredient model class."""
 
-    recipe = ForeignKey(
-        Recipe,
-        on_delete=CASCADE,
-        related_name='recipe',
-        verbose_name='Рецепты',
+    amount = PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(
+                limit_value=MIN_INGREDIENT_VALUE,
+                message='Для рецепта необходим хотя бы один ингредиент.'
+            )
+        ],
+        verbose_name="Количество",
     )
     ingredients = ForeignKey(
         Ingredient,
         on_delete=CASCADE,
-        related_name='ingredient',
+        related_name='recipe',
         verbose_name='Ингредиенты',
     )
-    amount = PositiveSmallIntegerField(
-        verbose_name="Количество",
+    recipe = ForeignKey(
+        Recipe,
+        on_delete=CASCADE,
+        related_name='ingredient',
+        verbose_name='Рецепты',
     )
 
     class Meta:
@@ -87,5 +93,4 @@ class RecipeIngredient(Model):
                 fields=['ingredients', 'recipe'],
                 name='recipe unique ingredient'),
         ]
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
+        verbose_name = 'Количество'
