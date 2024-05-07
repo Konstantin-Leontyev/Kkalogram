@@ -1,14 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
-from django.db.models import (SET_NULL, CASCADE, CharField, ForeignKey,
+from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
                               PositiveSmallIntegerField, TextField,
-                              UniqueConstraint,)
-
+                              UniqueConstraint)
 from ingredients.models import Ingredient
 from tags.models import Tag
 
-from .constants import MIN_COOKING_TIME, MIN_INGREDIENT_VALUE, NAME_FIELD_MAX_LENGTH
+from .constants import (MIN_COOKING_TIME, MIN_INGREDIENT_VALUE,
+                        NAME_FIELD_MAX_LENGTH)
 
 User = get_user_model()
 
@@ -37,8 +37,8 @@ class Recipe(Model):
     )
     ingredients = ManyToManyField(
         Ingredient,
+        through='RecipeIngredient',
         verbose_name='Ингредиенты',
-        through='RecipeIngredient'
     )
     name = CharField(
         max_length=NAME_FIELD_MAX_LENGTH,
@@ -75,13 +75,13 @@ class RecipeIngredient(Model):
     ingredients = ForeignKey(
         Ingredient,
         on_delete=CASCADE,
-        related_name='recipe',
+        related_name='ingredient',
         verbose_name='Ингредиенты',
     )
     recipe = ForeignKey(
         Recipe,
         on_delete=CASCADE,
-        related_name='ingredient',
+        related_name='recipe',
         verbose_name='Рецепты',
     )
 
