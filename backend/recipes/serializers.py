@@ -34,12 +34,15 @@ class RecipeSerializer(ModelSerializer):
         return ingredients
 
     def get_is_favorited(self, obj):
+        """Is favorited get function."""
         return False
 
     def get_is_in_shopping_cart(self, obj):
+        """Is in shopping_cart get function."""
         return False
 
     def create_ingredients(self, ingredients, recipe):
+        """Create recipe ingredients."""
         for i in ingredients:
             ingredient = Ingredient.objects.get(id=i['id'])
             RecipeIngredient.objects.create(
@@ -50,6 +53,12 @@ class RecipeSerializer(ModelSerializer):
 
     @atomic
     def create(self, validated_data):
+        """
+        Recipe create function.
+
+        .. Note:: Many to many fields present on the instance cannot be set
+        until the recipe model is instantiated.
+        """
         author = self.context.get('request').user
         validated_data.update({'author': author})
 
