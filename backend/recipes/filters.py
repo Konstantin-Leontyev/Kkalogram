@@ -1,10 +1,9 @@
-from django_filters.rest_framework import FilterSet, filters
+from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import ModelMultipleChoiceFilter
 from rest_framework.filters import SearchFilter
-
-from tags.constants import SLUG_CHOICES
-from .models import Recipe
 from tags.models import Tag
+
+from .models import Recipe
 
 
 class AuthorFilter(SearchFilter):
@@ -16,16 +15,9 @@ class RecipeFilter(FilterSet):
 
     tags = ModelMultipleChoiceFilter(
         field_name='tags__slug',
-        # to_field_name='tags',
-        # conjoined=True,
+        to_field_name='slug',
         queryset=Tag.objects.all(),
     )
-
-    # tags = MultipleChoiceFilter(
-    #     choices=SLUG_CHOICES,
-    #     action=lambda queryset, value:
-    #     queryset.filter(recipe__tags__in=value)
-    # )
 
     class Meta:
         """Describes custom recipe model filter metaclass."""
