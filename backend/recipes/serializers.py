@@ -30,10 +30,9 @@ class RecipeSerializer(ModelSerializer):
 
     def get_ingredients(self, obj):
         """Ingredients get function."""
-        ingredients = obj.ingredients.values(
+        return obj.ingredients.values(
             'id', 'name', 'measurement_unit', amount=F('ingredient__amount')
         )
-        return ingredients
 
     def get_is_favorited(self, obj):
         """Is favorited get function."""
@@ -46,8 +45,12 @@ class RecipeSerializer(ModelSerializer):
     def validate(self, data):
         """Validate ingredients and tags request lists."""
 
-        ingredients = self.initial_data.get("ingredients")
-        tags = self.initial_data.get("tags")
+        image = self.initial_data.get('image')
+        ingredients = self.initial_data.get('ingredients')
+        tags = self.initial_data.get('tags')
+
+        if not image:
+            raise ValidationError('Прикрепите изображение.')
 
         if not ingredients:
             raise ValidationError('Для создания рецепта необходим '
