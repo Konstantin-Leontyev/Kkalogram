@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, validate_image_file_extension
 from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
                               PositiveSmallIntegerField, TextField,
@@ -33,6 +33,9 @@ class Recipe(Model):
     )
     image = ImageField(
         upload_to='recipes/',
+        validators=[
+            validate_image_file_extension
+        ],
         verbose_name='Изображение',
     )
     ingredients = ManyToManyField(
@@ -67,7 +70,7 @@ class RecipeIngredient(Model):
         validators=[
             MinValueValidator(
                 limit_value=MIN_INGREDIENT_VALUE,
-                message='Для рецепта необходим хотя бы один ингредиент.'
+                message='Для рецепта необходим хотя бы 1 ингредиент.'
             )
         ],
         verbose_name="Количество",
