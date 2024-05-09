@@ -1,14 +1,13 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, validate_image_file_extension
+from django.core.validators import (MinValueValidator,
+                                    validate_image_file_extension)
 from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
-                              PositiveSmallIntegerField, TextField,
-                              UniqueConstraint)
+                              PositiveSmallIntegerField, TextField)
 from ingredients.models import Ingredient
 from tags.models import Tag
 
-from .constants import (MIN_COOKING_TIME, MIN_INGREDIENT_VALUE,
-                        NAME_FIELD_MAX_LENGTH)
+from .constants import MIN_COOKING_TIME, NAME_FIELD_MAX_LENGTH
 
 User = get_user_model()
 
@@ -67,12 +66,6 @@ class RecipeIngredient(Model):
     """Describes recipe ingredient model class."""
 
     amount = PositiveSmallIntegerField(
-        validators=[
-            MinValueValidator(
-                limit_value=MIN_INGREDIENT_VALUE,
-                message='Для рецепта необходим хотя бы 1 ингредиент.'
-            )
-        ],
         verbose_name="Количество",
     )
     ingredients = ForeignKey(
@@ -91,9 +84,4 @@ class RecipeIngredient(Model):
     class Meta:
         """Describes recipe ingredient model metaclass."""
 
-        constraints = [
-            UniqueConstraint(
-                fields=['ingredients', 'recipe'],
-                name='recipe unique ingredient'),
-        ]
         verbose_name = 'Количество'

@@ -62,14 +62,18 @@ class RecipeSerializer(ModelSerializer):
                 raise ValidationError(f'Ингредиента c id: {id} не существует.')
             if amount < 1:
                 ingredient_object = Ingredient.objects.get(id=id)
-                raise ValidationError(f'Минимальное количество ингредиента '
-                                      f'{ingredient_object.name}: '
-                                      f'1 {ingredient_object.measurement_unit}')
+                raise ValidationError(
+                    f'Минимальное количество ингредиента '
+                    f'{ingredient_object.name}: '
+                    f'1 {ingredient_object.measurement_unit}'
+                )
             ingredients_id.append(id)
         if len(ingredients_id) != len(set(ingredients_id)):
-            raise ValidationError('Ингредиенты в рамках одного рецепта'
-                                  'должны быть уникальны.'
-                                  'Объедините ингредиенты и повторите попытку.')
+            raise ValidationError(
+                'Ингредиенты в рамках одного рецепта'
+                'должны быть уникальны.'
+                'Объедините ингредиенты и повторите попытку.'
+            )
 
         if not tags:
             raise ValidationError({'tags': 'Нужно выбрать хотя бы один тег!'})
@@ -80,7 +84,6 @@ class RecipeSerializer(ModelSerializer):
             raise ValidationError({'tags': 'Теги должны быть уникальными!'})
 
         return data
-
 
     @atomic
     def create_ingredients(self, ingredients, recipe):
