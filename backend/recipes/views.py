@@ -15,3 +15,6 @@ class RecipeViewSet(ModelViewSet):
     filter_backends = [AuthorFilter, DjangoFilterBackend]
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     search_fields = ['author__id']
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

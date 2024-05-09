@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
+from .constants import MIN_INGREDIENT_AMOUNT
 
 from .models import Recipe, RecipeIngredient
 
@@ -35,11 +36,11 @@ class RecipeSerializer(ModelSerializer):
         )
 
     def get_is_favorited(self, obj):
-        """Is favorited get function."""
+        """Is favorite get function."""
         return False
 
     def get_is_in_shopping_cart(self, obj):
-        """Is in shopping_cart get function."""
+        """Is in shopping cart get function."""
         return False
 
     def validate(self, data):
@@ -60,12 +61,13 @@ class RecipeSerializer(ModelSerializer):
             id, amount = ingredient.values()
             if not Ingredient.objects.filter(id=id).exists():
                 raise ValidationError(f'Ингредиента c id: {id} не существует.')
-            if amount < 1:
+            if amount < MIN_INGREDIENT_AMOUNT:
                 ingredient_object = Ingredient.objects.get(id=id)
                 raise ValidationError(
-                    f'Минимальное количество ингредиента '
+                    'Минимальное количество ингредиента '
                     f'{ingredient_object.name}: '
-                    f'1 {ingredient_object.measurement_unit}'
+                    f'{MIN_INGREDIENT_AMOUNT} '
+                    f'{ingredient_object.measurement_unit}'
                 )
             ingredients_id.append(id)
         if len(ingredients_id) != len(set(ingredients_id)):
@@ -76,12 +78,14 @@ class RecipeSerializer(ModelSerializer):
             )
 
         if not tags:
-            raise ValidationError({'tags': 'Нужно выбрать хотя бы один тег!'})
+            raise ValidationError('Нужно указать хотя бы один тег.')
         for id in tags:
             if not Tag.objects.filter(id=id).exists():
                 raise ValidationError(f'Тега c id: {id} не существует.')
         if len(tags) != len(set(tags)):
-            raise ValidationError({'tags': 'Теги должны быть уникальными!'})
+            raise ValidationError(
+                'Теги в рамках одного рецепта должны быть уникальными.'
+            )
 
         return data
 
@@ -104,13 +108,11 @@ class RecipeSerializer(ModelSerializer):
         .. Note:: Many to many fields present on the instance cannot be set
         until the recipe model is instantiated.
         """
-        author = self.context.get('request').user
-        validated_data.update({'author': author})
+        tags = self.initial_data.pop('tags')
+        ingredients = self.initial_data.pop('ingredients')
 
         recipe = Recipe.objects.create(**validated_data)
 
-        tags = self.initial_data.pop('tags')
-        ingredients = self.initial_data.pop('ingredients')
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
         return recipe
