@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 unicode_username_validator = UnicodeUsernameValidator()
 
 
-def me_value_username_validator(username: str):
+def me_value_username_validator(username):
     """Raises error if username got "me" value."""
     if username == 'me':
         raise ValidationError(

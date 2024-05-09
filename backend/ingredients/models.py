@@ -24,6 +24,6 @@ class Ingredient(Model):
         constraints = [
             UniqueConstraint(
                 fields=['name', 'measurement_unit'],
-                name='Unique ingredient',
+                name='unique ingredient',
             )
         ]

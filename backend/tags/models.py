@@ -31,3 +31,6 @@ class Tag(Model):
 
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
