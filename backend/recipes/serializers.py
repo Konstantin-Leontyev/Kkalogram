@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
@@ -10,6 +12,17 @@ from users.serializers import CustomUserSerializer
 
 from .constants import MIN_INGREDIENT_AMOUNT
 from .models import Recipe, RecipeIngredient
+
+
+def hello_decorator(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return f(*args, **kwargs)
+
+    return wrapper
 
 
 class RecipeSerializer(ModelSerializer):
@@ -29,6 +42,16 @@ class RecipeSerializer(ModelSerializer):
         model = Recipe
         read_only_fields = ['is_favorited', 'is_in_shopping_cart']
 
+    def user_anonymous_check(self, function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            user = self.context.get('request').user
+            if user.is_anonymous:
+                return False
+            return function(*args, **kwargs)
+
+        return wrapper
+
     def get_ingredients(self, obj):
         """Ingredients get function."""
         return obj.ingredients.values(
@@ -41,7 +64,10 @@ class RecipeSerializer(ModelSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         """Is in shopping cart get function."""
-        return False
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(cart__user=user, id=obj.id).exists()
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""

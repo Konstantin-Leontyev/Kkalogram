@@ -30,7 +30,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
-    def subscribe(self, request, id):
+    def subscribe(self, request, pk):
         user = request.user
         author = get_object_or_404(User, id=id)
 
@@ -41,7 +41,7 @@ class CustomUserViewSet(UserViewSet):
 
         if Follow.objects.filter(user=user, author=author).exists():
             return Response({
-                'errors': f'Вы уже подписаны на автора с id: {id}.'
+                'errors': f'Вы уже подписаны на автора с id: {pk}.'
             }, status=HTTP_400_BAD_REQUEST)
 
         if request.method == 'POST':
