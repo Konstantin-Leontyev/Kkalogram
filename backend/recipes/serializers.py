@@ -7,13 +7,13 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
-from .constants import MIN_INGREDIENT_AMOUNT
 
+from .constants import MIN_INGREDIENT_AMOUNT
 from .models import Recipe, RecipeIngredient
 
 
 class RecipeSerializer(ModelSerializer):
-    """Describes Recipe serializer class."""
+    """Describes recipe serializer class."""
 
     author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
@@ -23,7 +23,7 @@ class RecipeSerializer(ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
-        """Describes Recipe serializer metaclass."""
+        """Describes recipe serializer metaclass."""
 
         fields = '__all__'
         model = Recipe
