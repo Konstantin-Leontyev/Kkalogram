@@ -47,7 +47,10 @@ class RecipeSerializer(ShorthandRecipeSerializer):
 
     def get_is_favorited(self, obj):
         """Is favorite get function."""
-        return False
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(favorites__user=user, id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
         """Is in shopping cart get function."""

@@ -5,8 +5,8 @@ from recipes.models import Recipe
 User = get_user_model()
 
 
-class Cart(Model):
-    """Describes shopping cart model class."""
+class Favorite(Model):
+    """Describes favorite model class."""
 
     user = ForeignKey(
         User,
@@ -16,12 +16,12 @@ class Cart(Model):
     recipe = ForeignKey(
         Recipe,
         on_delete=CASCADE,
+        related_name='favorites',
         verbose_name='Рецепт',
     )
 
     class Meta:
-        """Describes shopping cart model metaclass."""
+        """Describes favorite model metaclass."""
 
-        default_related_name = 'cart'
-        verbose_name = 'Корзина'
-        verbose_name_plural = 'В корзине'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'

@@ -31,6 +31,7 @@ class CustomUserViewSet(UserViewSet):
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id):
+        """Describes create and delete subscribe url action logic."""
         user = request.user
         author = get_object_or_404(User, id=id)
 
@@ -39,12 +40,15 @@ class CustomUserViewSet(UserViewSet):
                 'errors': 'Нельзя подписаться на самого себя.'
             }, status=HTTP_400_BAD_REQUEST)
 
-        if Follow.objects.filter(user=user, author=author).exists():
-            return Response({
-                'errors': f'Вы уже подписаны на автора с id: {id}.'
-            }, status=HTTP_400_BAD_REQUEST)
+        exists = Follow.objects.filter(user=user, author=author).exists()
 
         if request.method == 'POST':
+
+            if exists:
+                return Response({
+                    'errors': f'Вы уже подписаны на автора с id: {id}.'
+                }, status=HTTP_400_BAD_REQUEST)
+
             serializer = FollowSerializer(author, data=request.data,
                                           context={"request": request})
             serializer.is_valid(raise_exception=True)
@@ -52,11 +56,18 @@ class CustomUserViewSet(UserViewSet):
             return Response(serializer.data, status=HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            Follow.objects.get(ser=user, author=author).delete()
+
+            if not exists:
+                return Response({
+                    'errors': f'Вы не подписаны на автора с id: {id}.'
+                }, status=HTTP_400_BAD_REQUEST)
+
+            Follow.objects.get(author=author, user=user).delete()
             return Response(status=HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
+        """Describes subscriptions url action logic."""
         user = request.user
         queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)

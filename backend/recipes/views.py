@@ -1,6 +1,7 @@
 from carts.models import Cart
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from favorites.models import Favorite
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
@@ -19,6 +20,8 @@ from .serializers import RecipeSerializer, ShorthandRecipeSerializer
 
 
 class RecipeViewSet(ModelViewSet):
+    """Describes recipe view set."""
+
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filterset_class = RecipeFilter
@@ -27,11 +30,13 @@ class RecipeViewSet(ModelViewSet):
     search_fields = ['author__id']
 
     def perform_create(self, serializer):
+        """Automatically setting recipe author field."""
         serializer.save(author=self.request.user)
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
-    def shopping_cart(self, request, pk):
+    def favorite(self, request, pk):
+        """Describes favorite url action logic."""
         user = request.user
         status = HTTP_400_BAD_REQUEST
         if request.method == 'DELETE':
@@ -42,10 +47,43 @@ class RecipeViewSet(ModelViewSet):
                 'errors': f'Рецепта с id: {pk} не существует.'
             }, status=status)
         recipe = Recipe.objects.get(id=pk)
-        recipe_in_cart = Cart.objects.filter(user=user, recipe=recipe).exists()
+        exists = Favorite.objects.filter(user=user, recipe=recipe).exists()
 
         if request.method == 'POST':
-            if recipe_in_cart:
+            if exists:
+                return Response({
+                    'errors': f'Рецепт с id: {pk} уже в избранном.'
+                }, status=HTTP_400_BAD_REQUEST)
+            Favorite.objects.create(user=user, recipe=recipe)
+            serializer = ShorthandRecipeSerializer(recipe)
+            return Response(serializer.data, status=HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            if not exists:
+                return Response({
+                    'errors': f'Рецепта с id: {pk} нет в списке покупок.'
+                }, status=HTTP_400_BAD_REQUEST)
+            Favorite.objects.filter(user=user, recipe=recipe).delete()
+            return Response(status=HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post', 'delete'],
+            permission_classes=[IsAuthenticated])
+    def shopping_cart(self, request, pk):
+        """Describes shopping_cart url action logic."""
+        user = request.user
+        status = HTTP_400_BAD_REQUEST
+        if request.method == 'DELETE':
+            status = HTTP_404_NOT_FOUND
+
+        if not Recipe.objects.filter(id=pk).exists():
+            return Response({
+                'errors': f'Рецепта с id: {pk} не существует.'
+            }, status=status)
+        recipe = Recipe.objects.get(id=pk)
+        exists = Cart.objects.filter(user=user, recipe=recipe).exists()
+
+        if request.method == 'POST':
+            if exists:
                 return Response({
                     'errors': f'Рецепт с id: {pk} уже в списке покупок.'
                 }, status=HTTP_400_BAD_REQUEST)
@@ -54,16 +92,17 @@ class RecipeViewSet(ModelViewSet):
             return Response(serializer.data, status=HTTP_201_CREATED)
 
         elif request.method == 'DELETE':
-            if not recipe_in_cart:
+            if not exists:
                 return Response({
                     'errors': f'Рецепта с id: {pk} нет в списке покупок.'
                 }, status=HTTP_400_BAD_REQUEST)
-            recipe.delete()
+            Cart.objects.filter(user=user, recipe=recipe).delete()
             return Response(status=HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
+        """Describes shopping cart download url action logic."""
         final_list = {}
         ingredients = RecipeIngredient.objects.filter(
             recipe__cart__user=request.user).values_list(
