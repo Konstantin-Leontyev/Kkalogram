@@ -2,8 +2,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
 from drf_extra_fields.fields import Base64ImageField
-from ingredients.models import Ingredient
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+
+from ingredients.models import Ingredient
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
@@ -47,7 +48,10 @@ class RecipeSerializer(ShorthandRecipeSerializer):
 
     def get_is_favorited(self, obj):
         """Is favorite get function."""
-        return False
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(favorites__user=user, id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
         """Is in shopping cart get function."""
