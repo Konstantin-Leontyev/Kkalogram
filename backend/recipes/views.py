@@ -78,7 +78,7 @@ class RecipeViewSet(ModelViewSet):
                 }
             else:
                 final_list[name]['amount'] += item[2]
-        registerFont(TTFont('Slimamif', 'Slimamif.ttf', 'UTF-8'))
+        registerFont(TTFont('Slimamif', 'backend/Slimamif.ttf', 'UTF-8'))
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_list.pdf"'
