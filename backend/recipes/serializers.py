@@ -12,7 +12,18 @@ from .constants import MIN_INGREDIENT_AMOUNT
 from .models import Recipe, RecipeIngredient
 
 
-class RecipeSerializer(ModelSerializer):
+class ShorthandRecipeSerializer(ModelSerializer):
+    """Describes a shorthand recipe serializer."""
+
+    class Meta:
+        """Describes shorthand recipe serializer metaclass."""
+
+        fields = ('id', 'name', 'image', 'cooking_time')
+        model = Recipe
+        read_only_fields = ['__all__']
+
+
+class RecipeSerializer(ShorthandRecipeSerializer):
     """Describes recipe serializer class."""
 
     author = CustomUserSerializer(read_only=True)
@@ -22,11 +33,10 @@ class RecipeSerializer(ModelSerializer):
     is_in_shopping_cart = SerializerMethodField()
     tags = TagSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta(ShorthandRecipeSerializer.Meta):
         """Describes recipe serializer metaclass."""
 
         fields = '__all__'
-        model = Recipe
         read_only_fields = ['is_favorited', 'is_in_shopping_cart']
 
     def get_ingredients(self, obj):
@@ -41,7 +51,10 @@ class RecipeSerializer(ModelSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         """Is in shopping cart get function."""
-        return False
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Recipe.objects.filter(cart__user=user, id=obj.id).exists()
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""

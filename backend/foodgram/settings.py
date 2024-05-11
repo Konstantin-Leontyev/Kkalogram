@@ -78,14 +78,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'corsheaders',
+    'django_filters',
+    'djoser',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters',
-    'corsheaders',
-    'djoser',
+
+    'carts.apps.CartsConfig',
     'followers.apps.FollowersConfig',
-    'recipes.apps.RecipesConfig',
     'ingredients.apps.IngredientsConfig',
+    'recipes.apps.RecipesConfig',
     'tags.apps.TagsConfig',
     'users.apps.UsersConfig',
 

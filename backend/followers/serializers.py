@@ -1,18 +1,6 @@
-from recipes.models import Recipe
+from recipes.serializers import ShorthandRecipeSerializer
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer
 from users.serializers import CustomUserSerializer
-
-
-class FollowRecipeSerializer(ModelSerializer):
-    """Describes a shorthand recipe serializer."""
-
-    class Meta:
-        """Describes shorthand recipe serializer metaclass."""
-
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-        read_only_fields = ['__all__']
 
 
 class FollowSerializer(CustomUserSerializer):
@@ -37,7 +25,7 @@ class FollowSerializer(CustomUserSerializer):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()
-        return FollowRecipeSerializer(
+        return ShorthandRecipeSerializer(
             recipes[:int(limit)] if limit else recipes,
             many=True,
             read_only=True,
