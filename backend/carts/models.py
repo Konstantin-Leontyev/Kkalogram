@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import CASCADE, ForeignKey, Model
+
 from recipes.models import Recipe
 
 User = get_user_model()

@@ -1,5 +1,6 @@
-from recipes.serializers import ShorthandRecipeSerializer
 from rest_framework.fields import SerializerMethodField
+
+from recipes.serializers import ShorthandRecipeSerializer
 from users.serializers import CustomUserSerializer
 
 

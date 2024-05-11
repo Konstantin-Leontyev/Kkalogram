@@ -4,6 +4,7 @@ from django.core.validators import (MinValueValidator,
 from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
                               PositiveSmallIntegerField, TextField)
+
 from ingredients.models import Ingredient
 from tags.models import Tag
 

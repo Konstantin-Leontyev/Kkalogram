@@ -2,8 +2,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
 from drf_extra_fields.fields import Base64ImageField
-from ingredients.models import Ingredient
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
+
+from ingredients.models import Ingredient
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer

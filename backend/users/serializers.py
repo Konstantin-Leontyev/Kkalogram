@@ -1,6 +1,7 @@
 from djoser.serializers import UserSerializer
-from followers.models import Follow
 from rest_framework.serializers import SerializerMethodField
+
+from followers.models import Follow
 
 
 class CustomUserSerializer(UserSerializer):
