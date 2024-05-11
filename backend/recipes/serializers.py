@@ -1,5 +1,3 @@
-from functools import wraps
-
 from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
@@ -14,18 +12,18 @@ from .constants import MIN_INGREDIENT_AMOUNT
 from .models import Recipe, RecipeIngredient
 
 
-def hello_decorator(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return f(*args, **kwargs)
+class ShorthandRecipeSerializer(ModelSerializer):
+    """Describes a shorthand recipe serializer."""
 
-    return wrapper
+    class Meta:
+        """Describes shorthand recipe serializer metaclass."""
+
+        fields = ('id', 'name', 'image', 'cooking_time')
+        model = Recipe
+        read_only_fields = ['__all__']
 
 
-class RecipeSerializer(ModelSerializer):
+class RecipeSerializer(ShorthandRecipeSerializer):
     """Describes recipe serializer class."""
 
     author = CustomUserSerializer(read_only=True)
@@ -35,22 +33,11 @@ class RecipeSerializer(ModelSerializer):
     is_in_shopping_cart = SerializerMethodField()
     tags = TagSerializer(many=True, read_only=True)
 
-    class Meta:
+    class Meta(ShorthandRecipeSerializer.Meta):
         """Describes recipe serializer metaclass."""
 
         fields = '__all__'
-        model = Recipe
         read_only_fields = ['is_favorited', 'is_in_shopping_cart']
-
-    def user_anonymous_check(self, function):
-        @wraps(function)
-        def wrapper(*args, **kwargs):
-            user = self.context.get('request').user
-            if user.is_anonymous:
-                return False
-            return function(*args, **kwargs)
-
-        return wrapper
 
     def get_ingredients(self, obj):
         """Ingredients get function."""
