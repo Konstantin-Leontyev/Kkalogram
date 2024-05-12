@@ -5,12 +5,11 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from ingredients.models import Ingredient
-from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
 
-from .constants import MIN_INGREDIENT_AMOUNT
 from .models import Recipe, RecipeIngredient
+from .validators import tags_validator, ingredients_validator
 
 
 class ShorthandRecipeSerializer(ModelSerializer):
@@ -73,36 +72,9 @@ class RecipeSerializer(ShorthandRecipeSerializer):
         if not ingredients:
             raise ValidationError('Для создания рецепта необходим '
                                   'как минимум 1 ингредиент.')
-        ingredients_id = []
-        for ingredient in ingredients:
-            id, amount = ingredient.values()
-            if not Ingredient.objects.filter(id=id).exists():
-                raise ValidationError(f'Ингредиента c id: {id} не существует.')
-            if amount < MIN_INGREDIENT_AMOUNT:
-                ingredient_object = Ingredient.objects.get(id=id)
-                raise ValidationError(
-                    'Минимальное количество ингредиента '
-                    f'{ingredient_object.name}: '
-                    f'{MIN_INGREDIENT_AMOUNT} '
-                    f'{ingredient_object.measurement_unit}'
-                )
-            ingredients_id.append(id)
-        if len(ingredients_id) != len(set(ingredients_id)):
-            raise ValidationError(
-                'Ингредиенты в рамках одного рецепта'
-                'должны быть уникальны.'
-                'Объедините ингредиенты и повторите попытку.'
-            )
 
-        if not tags:
-            raise ValidationError('Нужно указать хотя бы один тег.')
-        for id in tags:
-            if not Tag.objects.filter(id=id).exists():
-                raise ValidationError(f'Тега c id: {id} не существует.')
-        if len(tags) != len(set(tags)):
-            raise ValidationError(
-                'Теги в рамках одного рецепта должны быть уникальными.'
-            )
+        ingredients_validator(ingredients)
+        tags_validator(tags)
 
         return data
 
