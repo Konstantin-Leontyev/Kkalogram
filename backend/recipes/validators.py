@@ -26,7 +26,7 @@ def ingredients_validator(ingredients):
             'должны быть уникальны.'
             'Объедините ингредиенты и повторите попытку.'
         )
-    
+
 
 def tags_validator(tags):
     if not tags:
@@ -38,4 +38,3 @@ def tags_validator(tags):
         raise ValidationError(
             'Теги в рамках одного рецепта должны быть уникальными.'
         )
-    

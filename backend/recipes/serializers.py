@@ -9,7 +9,7 @@ from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
 
 from .models import Recipe, RecipeIngredient
-from .validators import tags_validator, ingredients_validator
+from .validators import ingredients_validator, tags_validator
 
 
 class ShorthandRecipeSerializer(ModelSerializer):
