@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'carts.apps.CartsConfig',
+    'core.apps.CoreConfig',
     'favorites.apps.FavoritesConfig',
     'followers.apps.FollowersConfig',
     'ingredients.apps.IngredientsConfig',

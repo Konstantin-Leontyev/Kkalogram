@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from ingredients.models import Ingredient
-# from recipes.models import Recipe
+from recipes.models import Recipe
 from tags.models import Tag
 
 User = get_user_model()
@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     tables = {
         'ingredients': Ingredient,
-        # 'recipe': Recipe,
+        'recipe': Recipe,
         'tags': Tag,
         'users': User,
     }
