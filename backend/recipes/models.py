@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import (MinValueValidator,
+from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     validate_image_file_extension)
 from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
@@ -8,7 +8,8 @@ from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
 from ingredients.models import Ingredient
 from tags.models import Tag
 
-from .constants import MIN_COOKING_TIME, NAME_FIELD_MAX_LENGTH
+from .constants import (MAX_COOKING_TIME, MIN_COOKING_TIME,
+                        NAME_FIELD_MAX_LENGTH)
 
 User = get_user_model()
 
@@ -27,7 +28,11 @@ class Recipe(Model):
             MinValueValidator(
                 limit_value=MIN_COOKING_TIME,
                 message='Минимальное время приготовления 1 мин.'
-            )
+            ),
+            MaxValueValidator(
+                limit_value=MAX_COOKING_TIME,
+                message='Максимальное время приготовления 2 года.'
+            ),
         ],
         verbose_name='Время приготовления',
     )
