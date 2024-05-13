@@ -1,28 +1,13 @@
-from django.contrib.auth import get_user_model
-from django.db.models import CASCADE, ForeignKey, Model
-
-from recipes.models import Recipe
-
-User = get_user_model()
+from core.models import UserRecipeModel
 
 
-class Cart(Model):
-    """Describes shopping cart model class."""
-
-    user = ForeignKey(
-        User,
-        on_delete=CASCADE,
-        verbose_name='Пользователь',
-    )
-    recipe = ForeignKey(
-        Recipe,
-        on_delete=CASCADE,
-        verbose_name='Рецепт',
-    )
+class Cart(UserRecipeModel):
+    """Describes user cart relation tab."""
 
     class Meta:
-        """Describes shopping cart model metaclass."""
+        """Describes cart model metaclass."""
 
         default_related_name = 'cart'
+
         verbose_name = 'Корзина'
         verbose_name_plural = 'В корзине'
