@@ -6,7 +6,7 @@ from dotenv.main import load_dotenv
 
 load_dotenv()
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split()
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split()
 
 AUTH_PASSWORD_VALIDATORS = [
     {

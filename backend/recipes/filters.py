@@ -1,9 +1,7 @@
 from django_filters.rest_framework import FilterSet
-from django_filters.rest_framework.filters import (BooleanFilter,
-                                                   ModelMultipleChoiceFilter)
+from django_filters.rest_framework.filters import (AllValuesMultipleFilter,
+                                                   BooleanFilter)
 from rest_framework.filters import SearchFilter
-
-from tags.models import Tag
 
 from .models import Recipe
 
@@ -17,11 +15,7 @@ class AuthorFilter(SearchFilter):
 class RecipeFilter(FilterSet):
     """Describes custom filter for recipe model."""
 
-    tags = ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        to_field_name='slug',
-        queryset=Tag.objects.all(),
-    )
+    tags = AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(method='filter_is_in_shopping_cart')
 
