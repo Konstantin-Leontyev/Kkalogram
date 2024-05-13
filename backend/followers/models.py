@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.db.models import CASCADE, ForeignKey, Model
+from django.db.models import (CASCADE, CheckConstraint, F, ForeignKey, Model,
+                              Q, UniqueConstraint)
 
 User = get_user_model()
 
@@ -23,5 +24,15 @@ class Follow(Model):
     class Meta:
         """Describes follow model metaclass."""
 
+        constraints = [
+            UniqueConstraint(
+                fields=['user', 'author'],
+                name='Подписка уже существует.'
+            ),
+            CheckConstraint(
+                check=~Q(author=F("user")),
+                name='Нельзя подписаться на самого себя.'
+            ),
+        ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'

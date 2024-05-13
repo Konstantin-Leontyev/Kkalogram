@@ -2,7 +2,7 @@ from core.models import UserRecipeModel
 
 
 class Favorite(UserRecipeModel):
-    """Describes user favorite relation tab."""
+    """Describes favorite model class."""
 
     class Meta:
         """Describes favorite model metaclass."""

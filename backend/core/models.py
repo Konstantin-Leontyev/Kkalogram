@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class UserRecipeModel(Model):
-    """Describes base model for user recipe relation tab."""
+    """Describes base model for user recipe relation."""
 
     user = ForeignKey(
         User,

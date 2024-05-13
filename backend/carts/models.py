@@ -2,7 +2,7 @@ from core.models import UserRecipeModel
 
 
 class Cart(UserRecipeModel):
-    """Describes user cart relation tab."""
+    """Describes cart model class."""
 
     class Meta:
         """Describes cart model metaclass."""

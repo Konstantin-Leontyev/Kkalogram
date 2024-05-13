@@ -26,8 +26,14 @@ class FollowSerializer(CustomUserSerializer):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()
+        if limit:
+            try:
+                recipes = recipes[:int(limit)]
+            except TypeError:
+                print('Ошибка выполнения запроса.'
+                      'Значение `recipes_limit` должно быть числом.')
         return ShorthandRecipeSerializer(
-            recipes[:int(limit)] if limit else recipes,
+            recipes,
             many=True,
             read_only=True,
         ).data
