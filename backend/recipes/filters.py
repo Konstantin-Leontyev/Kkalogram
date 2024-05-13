@@ -27,12 +27,14 @@ class RecipeFilter(FilterSet):
 
     def filter_is_favorited(self, queryset, _, value):
         """Custom filter fo recipe is_favorite field."""
-        if value and not self.request.user.is_anonymous:
-            return queryset.filter(favorites__user=self.request.user)
+        user = self.request.user
+        if value and user.is_authenticated:
+            return queryset.filter(favorites__user=user)
         return queryset
 
     def filter_is_in_shopping_cart(self, queryset, _, value):
         """Custom filter fo recipe is_in_shopping_cart field."""
-        if value and not self.request.user.is_anonymous:
-            return queryset.filter(cart__user=self.request.user)
+        user = self.request.user
+        if value and user.is_authenticated:
+            return queryset.filter(cart__user=user)
         return queryset
