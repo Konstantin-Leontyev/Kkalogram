@@ -9,7 +9,7 @@ from ingredients.models import Ingredient
 from tags.models import Tag
 
 from .constants import (MAX_COOKING_TIME, MIN_COOKING_TIME,
-                        NAME_FIELD_MAX_LENGTH)
+                        MIN_INGREDIENT_AMOUNT, NAME_FIELD_MAX_LENGTH)
 
 User = get_user_model()
 
@@ -72,6 +72,12 @@ class RecipeIngredient(Model):
     """Describes recipe ingredient model class."""
 
     amount = PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(
+                limit_value=MIN_INGREDIENT_AMOUNT,
+                message='Минимальное количество ингредиентов 1.'
+            ),
+        ],
         verbose_name="Количество",
     )
     ingredients = ForeignKey(
