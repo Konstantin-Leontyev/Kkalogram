@@ -20,7 +20,12 @@ class ShorthandRecipeSerializer(ModelSerializer):
     class Meta:
         """Describes shorthand recipe serializer metaclass."""
 
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = (
+            'cooking_time',
+            'id',
+            'image',
+            'name',
+        )
         model = Recipe
         read_only_fields = ['__all__']
 
@@ -38,9 +43,19 @@ class ReadRecipeSerializer(ModelSerializer):
     class Meta:
         """Describes read recipe serializer metaclass."""
 
-        fields = '__all__'
+        fields = (
+            'author',
+            'cooking_time',
+            'id',
+            'image',
+            'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
+            'name',
+            'tags',
+            'text',
+        )
         model = Recipe
-        read_only_fields = ['__all__']
 
     def get_ingredients(self, obj):
         """Ingredients get function."""
@@ -65,15 +80,24 @@ class ReadRecipeSerializer(ModelSerializer):
 
 class RecipeSerializer(ReadRecipeSerializer):
     """Describes write recipe serializer class."""
-    # ingredients = SerializerMethodField()
+    # ingredients = PrimaryKeyRelatedField(many=True,
+    #                                      queryset=Ingredient.objects.all())
     tags = PrimaryKeyRelatedField(many=True,
                                   queryset=Tag.objects.all())
 
     class Meta(ReadRecipeSerializer.Meta):
         """Describes write recipe serializer metaclass."""
 
-        # fields = '__all__'
-        read_only_fields = ['is_favorited', 'is_in_shopping_cart']
+        fields = (
+            'author',
+            'cooking_time',
+            'id',
+            'image',
+            'ingredients',
+            'name',
+            'tags',
+            'text',
+        )
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""

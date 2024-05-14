@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 
 from ingredients.models import Ingredient
 from recipes.constants import MIN_INGREDIENT_AMOUNT
-from tags.models import Tag
 
 
 def ingredients_validator(ingredients):
@@ -31,9 +30,6 @@ def ingredients_validator(ingredients):
 def tags_validator(tags):
     if not tags:
         raise ValidationError('Нужно указать хотя бы один тег.')
-    for id in tags:
-        if not Tag.objects.filter(id=id).exists():
-            raise ValidationError(f'Тега c id: {id} не существует.')
     if len(tags) != len(set(tags)):
         raise ValidationError(
             'Теги в рамках одного рецепта должны быть уникальными.'
