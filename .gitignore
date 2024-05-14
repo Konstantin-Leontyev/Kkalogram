@@ -132,7 +132,6 @@ dmypy.json
 .idea
 
 # media
-recipes/
-tmp_db/
+media/*
 tests/
 backend/users/tests/

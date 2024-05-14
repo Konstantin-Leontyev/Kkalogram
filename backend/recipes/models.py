@@ -37,7 +37,7 @@ class Recipe(Model):
         verbose_name='Время приготовления',
     )
     image = ImageField(
-        upload_to='recipes/',
+        upload_to='media/recipes_photo/',
         validators=[
             validate_image_file_extension
         ],
