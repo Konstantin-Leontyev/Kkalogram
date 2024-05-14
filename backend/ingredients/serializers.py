@@ -10,5 +10,9 @@ class IngredientSerializer(ModelSerializer):
         """Describes ingredient serializer metaclass."""
 
         model = Ingredient
-        fields = '__all__'
+        fields = (
+            'id',
+            'measurement_unit',
+            'name',
+        )
         read_only_fields = ['__all__']
