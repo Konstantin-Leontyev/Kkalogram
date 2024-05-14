@@ -21,27 +21,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    # {
-    #     'NAME': 'users.validators.NumberValidator',
-    # },
-    # {
-    #     'NAME': 'users.validators.UppercaseValidator',
-    # },
-    # {
-    #     'NAME': 'users.validators.LowercaseValidator',
-    # },
-    # {
-    #     'NAME': 'users.validators.SymbolValidator',
-    # },
 ]
-
-AUTH_USERNAME_VALIDATORS = [
-    {
-        'NAME': 'users.validators.MeValidator',
-    },
-]
-
-AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -77,15 +57,18 @@ DJOSER = {
     'PERMISSIONS': {
         'user': ('rest_framework.permissions.AllowAny',),
         'user_list': ('rest_framework.permissions.AllowAny',),
+
     },
     "SERIALIZERS": {
         'current_user': 'users.serializers.CustomUserSerializer',
+        'user': 'users.serializers.CustomUserSerializer',
+        'user_create': 'users.serializers.CustomUserCreateSerializer',
     },
 }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'users.apps.UsersAuthConfig',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
