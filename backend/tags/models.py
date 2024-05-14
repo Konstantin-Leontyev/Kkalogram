@@ -1,27 +1,26 @@
+from colorfield.fields import ColorField
+
 from django.db.models import CharField, Model, SlugField
 
-from .constants import (COLOR_CHOICES, NAME_CHOICES, SLUG_CHOICES,
-                        TAG_FIELDS_MAX_LENGTH)
+from .constants import (HEX_FIELD_MAX_LENGTH, NAME_FIELD_MAX_LENGTH,
+                        SLUG_FIELD_MAX_LENGTH)
 
 
 class Tag(Model):
     """Describes tag model class."""
 
-    color = CharField(
-        choices=COLOR_CHOICES,
-        max_length=TAG_FIELDS_MAX_LENGTH,
+    color = ColorField(
+        max_length=HEX_FIELD_MAX_LENGTH,
         unique=True,
         verbose_name='Цвет',
     )
     name = CharField(
-        choices=NAME_CHOICES,
-        max_length=TAG_FIELDS_MAX_LENGTH,
+        max_length=NAME_FIELD_MAX_LENGTH,
         unique=True,
         verbose_name='Тег',
     )
     slug = SlugField(
-        choices=SLUG_CHOICES,
-        max_length=TAG_FIELDS_MAX_LENGTH,
+        max_length=SLUG_FIELD_MAX_LENGTH,
         unique=True,
         verbose_name='Слаг',
     )

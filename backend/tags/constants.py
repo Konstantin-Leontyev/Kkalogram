@@ -1,31 +1,5 @@
-GREEN = '#008000'
-ORANGE = '#FFA500'
-RED = '#FF0000'
+HEX_FIELD_MAX_LENGTH = 7
 
-COLOR_CHOICES = [
-    (GREEN, 'Зеленый'),
-    (ORANGE, 'Оранжевый'),
-    (RED, 'Красный'),
-]
+NAME_FIELD_MAX_LENGTH = 200
 
-BREAKFAST = 'Завтрак'
-LUNCH = 'Обед'
-DINNER = 'Ужин'
-
-NAME_CHOICES = [
-    (BREAKFAST, 'Завтрак'),
-    (LUNCH, 'Обед'),
-    (DINNER, 'Ужин'),
-]
-
-BREAKFAST_SLUG = 'Breakfast'
-LUNCH_SLUG = 'Lunch'
-DINNER_SLUG = 'Dinner'
-
-SLUG_CHOICES = [
-    (BREAKFAST_SLUG, 'Breakfast'),
-    (LUNCH_SLUG, 'Lunch'),
-    (DINNER_SLUG, 'Dinner'),
-]
-
-TAG_FIELDS_MAX_LENGTH = 10
+SLUG_FIELD_MAX_LENGTH = 200
