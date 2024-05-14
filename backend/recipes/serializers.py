@@ -2,9 +2,11 @@ from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from ingredients.models import Ingredient
+from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
 
@@ -23,8 +25,8 @@ class ShorthandRecipeSerializer(ModelSerializer):
         read_only_fields = ['__all__']
 
 
-class RecipeSerializer(ShorthandRecipeSerializer):
-    """Describes recipe serializer class."""
+class ReadRecipeSerializer(ModelSerializer):
+    """Describes read recipe serializer."""
 
     author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
@@ -33,11 +35,12 @@ class RecipeSerializer(ShorthandRecipeSerializer):
     is_in_shopping_cart = SerializerMethodField()
     tags = TagSerializer(many=True, read_only=True)
 
-    class Meta(ShorthandRecipeSerializer.Meta):
-        """Describes recipe serializer metaclass."""
+    class Meta:
+        """Describes read recipe serializer metaclass."""
 
         fields = '__all__'
-        read_only_fields = ['is_favorited', 'is_in_shopping_cart']
+        model = Recipe
+        read_only_fields = ['__all__']
 
     def get_ingredients(self, obj):
         """Ingredients get function."""
@@ -58,6 +61,19 @@ class RecipeSerializer(ShorthandRecipeSerializer):
         if user.is_anonymous:
             return False
         return Recipe.objects.filter(cart__user=user, id=obj.id).exists()
+
+
+class RecipeSerializer(ReadRecipeSerializer):
+    """Describes write recipe serializer class."""
+    # ingredients = SerializerMethodField()
+    tags = PrimaryKeyRelatedField(many=True,
+                                  queryset=Tag.objects.all())
+
+    class Meta(ReadRecipeSerializer.Meta):
+        """Describes write recipe serializer metaclass."""
+
+        # fields = '__all__'
+        read_only_fields = ['is_favorited', 'is_in_shopping_cart']
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""
@@ -97,7 +113,7 @@ class RecipeSerializer(ShorthandRecipeSerializer):
         .. Note:: Many to many fields present on the instance cannot be set
         until the recipe model is instantiated.
         """
-        tags = self.initial_data.pop('tags')
+        tags = validated_data.pop('tags')
         ingredients = self.initial_data.pop('ingredients')
 
         recipe = Recipe.objects.create(**validated_data)
@@ -105,3 +121,8 @@ class RecipeSerializer(ShorthandRecipeSerializer):
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
         return recipe
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return ReadRecipeSerializer(instance, context=context).data
