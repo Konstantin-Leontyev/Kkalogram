@@ -132,6 +132,6 @@ dmypy.json
 .idea
 
 # media
-media/*
+media/
 tests/
 backend/users/tests/
