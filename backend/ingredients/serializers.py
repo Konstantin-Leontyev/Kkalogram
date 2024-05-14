@@ -15,4 +15,4 @@ class IngredientSerializer(ModelSerializer):
             'measurement_unit',
             'name',
         )
-        read_only_fields = ['__all__']
+        # read_only_fields = ['__all__']

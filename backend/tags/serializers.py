@@ -10,5 +10,9 @@ class TagSerializer(ModelSerializer):
         """Describes tag serializer metaclass."""
 
         model = Tag
-        fields = '__all__'
-        read_only_fields = ['__all__']
+        fields = (
+            'color',
+            'id',
+            'name',
+            'slug',
+        )

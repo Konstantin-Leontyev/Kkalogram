@@ -1,5 +1,4 @@
 from colorfield.fields import ColorField
-
 from django.db.models import CharField, Model, SlugField
 
 from .constants import (HEX_FIELD_MAX_LENGTH, NAME_FIELD_MAX_LENGTH,
