@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     validate_image_file_extension)
-from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
+from django.db.models import (CASCADE, SET_NULL, CharField, CheckConstraint, ForeignKey,
                               ImageField, ManyToManyField, Model,
-                              PositiveSmallIntegerField, TextField)
+                              PositiveSmallIntegerField, TextField, UniqueConstraint, Q)
+from rest_framework.validators import UniqueTogetherValidator
 
 from ingredients.models import Ingredient
 from tags.models import Tag
@@ -96,4 +97,12 @@ class RecipeIngredient(Model):
     class Meta:
         """Describes recipe ingredient model metaclass."""
 
+        constraints = [
+            UniqueConstraint(
+                fields=['ingredients', 'recipe'],
+                name='Ингредиенты в рамках одного рецепта'
+                     'должны быть уникальны.'
+                     'Объедините ингредиенты и повторите попытку.'
+            ),
+        ]
         verbose_name = 'Количество'

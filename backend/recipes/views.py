@@ -38,13 +38,13 @@ class RecipeViewSet(ModelViewSet):
             permission_classes=[IsAuthenticated])
     def favorite(self, request, pk):
         """Describes favorite url action logic."""
-        return self.add_delete(Favorite, 'избранном', request, pk)
+        return self.add_delete(Favorite, 'избранном.', request, pk)
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk):
         """Describes shopping_cart url action logic."""
-        return self.add_delete(Cart, 'списке покупок', request, pk)
+        return self.add_delete(Cart, 'списке покупок.', request, pk)
 
     def add_delete(self, model, msg, request, pk):
         """Universal add or delete function for favorite and cart actions."""

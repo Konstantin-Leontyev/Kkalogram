@@ -11,7 +11,14 @@ from tags.serializers import TagSerializer
 from users.serializers import CustomUserSerializer
 
 from .models import Recipe, RecipeIngredient
-from .validators import ingredients_validator, tags_validator
+
+
+class RecipeIngredientSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+
+    class Meta:
+        fields = ('id', 'amount')
+        model = RecipeIngredient
 
 
 class ShorthandRecipeSerializer(ModelSerializer):
@@ -57,9 +64,9 @@ class ReadRecipeSerializer(ModelSerializer):
         )
         model = Recipe
 
-    def get_ingredients(self, obj):
+    def get_ingredients(self, instance):
         """Ingredients get function."""
-        return obj.ingredients.values(
+        return instance.ingredients.values(
             'id', 'name', 'measurement_unit', amount=F('ingredient__amount')
         )
 
@@ -80,8 +87,8 @@ class ReadRecipeSerializer(ModelSerializer):
 
 class RecipeSerializer(ReadRecipeSerializer):
     """Describes write recipe serializer class."""
-    # ingredients = PrimaryKeyRelatedField(many=True,
-    #                                      queryset=Ingredient.objects.all())
+    ingredients = RecipeIngredientSerializer(many=True,
+                                             required=True)
     tags = PrimaryKeyRelatedField(many=True,
                                   queryset=Tag.objects.all())
 
@@ -101,7 +108,6 @@ class RecipeSerializer(ReadRecipeSerializer):
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""
-
         image = self.initial_data.get('image')
         ingredients = self.initial_data.get('ingredients')
         tags = self.initial_data.get('tags')
@@ -109,12 +115,22 @@ class RecipeSerializer(ReadRecipeSerializer):
         if not image:
             raise ValidationError('Прикрепите изображение.')
 
-        if not ingredients:
-            raise ValidationError('Для создания рецепта необходим '
-                                  'как минимум 1 ингредиент.')
+        if not tags:
+            raise ValidationError('Нужно указать хотя бы один тег.')
+        if len(tags) != len(set(tags)):
+            raise ValidationError(
+                'Теги в рамках одного рецепта должны быть уникальными.'
+            )
 
-        ingredients_validator(ingredients)
-        tags_validator(tags)
+        if not ingredients:
+            raise ValidationError('Для создания рецепта необходим как минимум 1 ингредиент.')
+        ingredients = [ingredient['id'] for ingredient in ingredients]
+        if len(ingredients) != len(set(ingredients)):
+            raise ValidationError(
+                    'Ингредиенты в рамках одного рецепта'
+                    'должны быть уникальны.'
+                    'Объедините ингредиенты и повторите попытку.'
+                )
 
         return data
 
@@ -123,11 +139,12 @@ class RecipeSerializer(ReadRecipeSerializer):
         """Create recipe ingredients."""
         RecipeIngredient.objects.bulk_create(
             [RecipeIngredient(
-                ingredients=Ingredient.objects.get(id=ingredient['id']),
+                ingredients=ingredient['id'],
                 recipe=recipe,
                 amount=ingredient['amount']
             ) for ingredient in ingredients]
         )
+
 
     @atomic
     def create(self, validated_data):
@@ -138,7 +155,7 @@ class RecipeSerializer(ReadRecipeSerializer):
         until the recipe model is instantiated.
         """
         tags = validated_data.pop('tags')
-        ingredients = self.initial_data.pop('ingredients')
+        ingredients = validated_data.pop('ingredients')
 
         recipe = Recipe.objects.create(**validated_data)
 
@@ -146,7 +163,17 @@ class RecipeSerializer(ReadRecipeSerializer):
         self.create_ingredients(ingredients, recipe)
         return recipe
 
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        instance.ingredients.clear()
+        tags = validated_data.pop('tags')
+        instance.tags.clear()
+        instance.tags.set(tags)
+        self.create_ingredients(ingredients, recipe=instance)
+        return instance
+
     def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return ReadRecipeSerializer(instance, context=context).data
+        return ReadRecipeSerializer(
+            instance,
+            context={'request': self.context.get('request')}
+        ).data
