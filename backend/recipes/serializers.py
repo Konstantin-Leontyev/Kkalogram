@@ -123,14 +123,15 @@ class RecipeSerializer(ReadRecipeSerializer):
             )
 
         if not ingredients:
-            raise ValidationError('Для создания рецепта необходим как минимум 1 ингредиент.')
+            raise ValidationError('Для создания рецепта необходим '
+                                  'как минимум 1 ингредиент.')
         ingredients = [ingredient['id'] for ingredient in ingredients]
         if len(ingredients) != len(set(ingredients)):
             raise ValidationError(
-                    'Ингредиенты в рамках одного рецепта'
-                    'должны быть уникальны.'
-                    'Объедините ингредиенты и повторите попытку.'
-                )
+                'Ингредиенты в рамках одного рецепта'
+                'должны быть уникальны.'
+                'Объедините ингредиенты и повторите попытку.'
+            )
 
         return data
 
@@ -144,7 +145,6 @@ class RecipeSerializer(ReadRecipeSerializer):
                 amount=ingredient['amount']
             ) for ingredient in ingredients]
         )
-
 
     @atomic
     def create(self, validated_data):

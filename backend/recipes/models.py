@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     validate_image_file_extension)
-from django.db.models import (CASCADE, SET_NULL, CharField, CheckConstraint, ForeignKey,
+from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               ImageField, ManyToManyField, Model,
-                              PositiveSmallIntegerField, TextField, UniqueConstraint, Q)
-from rest_framework.validators import UniqueTogetherValidator
+                              PositiveSmallIntegerField, TextField,
+                              UniqueConstraint)
 
 from ingredients.models import Ingredient
 from tags.models import Tag
