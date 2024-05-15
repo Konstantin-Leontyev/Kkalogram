@@ -17,15 +17,15 @@ class FollowSerializer(CustomUserSerializer):
                   *CustomUserSerializer.Meta.fields)
         read_only_fields = ['email', 'first_name', 'last_name', 'username']
 
-    def get_recipes_count(self, obj):
+    def get_recipes_count(self, instance):
         """Get following user recipes count."""
-        return obj.recipes.count()
+        return instance.recipes.count()
 
-    def get_recipes(self, obj):
+    def get_recipes(self, instance):
         """Get following user limit recipes."""
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
-        recipes = obj.recipes.all()
+        recipes = instance.recipes.all()
         if limit:
             try:
                 recipes = recipes[:int(limit)]
