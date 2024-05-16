@@ -164,6 +164,11 @@ class RecipeSerializer(ReadRecipeSerializer):
         return recipe
 
     def update(self, instance, validated_data):
+        """
+        Recipe create function.
+
+        .. Note:: You should clear the instance fields before setting new values.
+        """
         ingredients = validated_data.pop('ingredients')
         instance.ingredients.clear()
         tags = validated_data.pop('tags')
