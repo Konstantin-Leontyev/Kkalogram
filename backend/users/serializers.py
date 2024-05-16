@@ -68,8 +68,9 @@ class FoodgramUserSerializer(UserSerializer):
             'username',
         )
 
-    def get_is_subscribed(self, obj):
+    def get_is_subscribed(self, instanse):
         """Returns the user's subscription status."""
         user = self.context.get('request').user
         return (user.is_authenticated
-                and Follow.objects.filter(user=user, author=obj.id).exists())
+                and Follow.objects.filter(author=instanse.id,
+                                          user=user).exists())
