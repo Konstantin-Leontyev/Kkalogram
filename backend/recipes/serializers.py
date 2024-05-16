@@ -178,6 +178,7 @@ class RecipeSerializer(ReadRecipeSerializer):
         return instance
 
     def to_representation(self, instance):
+        """Change serializer to representation."""
         return ReadRecipeSerializer(
             instance,
             context={'request': self.context.get('request')}
