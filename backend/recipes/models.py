@@ -105,4 +105,5 @@ class RecipeIngredient(Model):
                      'Объедините ингредиенты и повторите попытку.'
             ),
         ]
-        verbose_name = 'Количество'
+        verbose_name = 'Список ингредиентов рецепта'
+        verbose_name_plural = 'Список ингредиентов рецепта'
