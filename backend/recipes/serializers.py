@@ -70,19 +70,19 @@ class ReadRecipeSerializer(ModelSerializer):
             'id', 'name', 'measurement_unit', amount=F('ingredient__amount')
         )
 
-    def get_is_favorited(self, obj):
+    def get_is_favorited(self, instance):
         """Is favorite get function."""
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Recipe.objects.filter(favorites__user=user, id=obj.id).exists()
+        return (user.is_authenticated
+                and Recipe.objects.filter(favorites__user=user,
+                                          id=instance.id).exists())
 
-    def get_is_in_shopping_cart(self, obj):
+    def get_is_in_shopping_cart(self, instance):
         """Is in shopping cart get function."""
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Recipe.objects.filter(cart__user=user, id=obj.id).exists()
+        return (user.is_authenticated
+                and Recipe.objects.filter(cart__user=user,
+                                          id=instance.id).exists())
 
 
 class RecipeSerializer(ReadRecipeSerializer):
