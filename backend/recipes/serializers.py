@@ -1,7 +1,7 @@
-from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.db.transaction import atomic
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework.exceptions import ValidationError
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
@@ -21,7 +21,7 @@ class RecipeIngredientSerializer(ModelSerializer):
         model = RecipeIngredient
 
 
-class ShorthandRecipeSerializer(ModelSerializer):
+class RecipeSerializer(ModelSerializer):
     """Describes a shorthand recipe serializer."""
 
     class Meta:
@@ -37,7 +37,7 @@ class ShorthandRecipeSerializer(ModelSerializer):
         read_only_fields = ['__all__']
 
 
-class ReadRecipeSerializer(ModelSerializer):
+class ListRetrieveRecipeSerializer(ModelSerializer):
     """Describes read recipe serializer."""
 
     author = FoodgramUserSerializer(read_only=True)
@@ -85,14 +85,14 @@ class ReadRecipeSerializer(ModelSerializer):
                                           id=instance.id).exists())
 
 
-class RecipeSerializer(ReadRecipeSerializer):
+class PostUpdateRecipeSerializer(ListRetrieveRecipeSerializer):
     """Describes write recipe serializer class."""
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,
                                   queryset=Tag.objects.all())
 
-    class Meta(ReadRecipeSerializer.Meta):
+    class Meta(ListRetrieveRecipeSerializer.Meta):
         """Describes write recipe serializer metaclass."""
 
         fields = (
@@ -167,7 +167,8 @@ class RecipeSerializer(ReadRecipeSerializer):
         """
         Recipe create function.
 
-        .. Note:: You should clear the instance fields before setting new values.
+        .. Note:: You should clear the instance fields before
+        setting new values.
         """
         ingredients = validated_data.pop('ingredients')
         instance.ingredients.clear()
@@ -179,7 +180,7 @@ class RecipeSerializer(ReadRecipeSerializer):
 
     def to_representation(self, instance):
         """Change serializer to representation."""
-        return ReadRecipeSerializer(
+        return ListRetrieveRecipeSerializer(
             instance,
             context={'request': self.context.get('request')}
         ).data
