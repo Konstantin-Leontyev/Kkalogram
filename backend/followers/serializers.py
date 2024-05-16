@@ -1,5 +1,8 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 
+from followers.models import Follow
 from recipes.serializers import RecipeSerializer
 from users.serializers import FoodgramUserSerializer
 
@@ -37,3 +40,35 @@ class FollowSerializer(FoodgramUserSerializer):
             many=True,
             read_only=True,
         ).data
+
+
+class FollowCreateSerializer(ModelSerializer):
+    """Describes follow create serializer class."""
+
+    class Meta:
+        """Describes follow create serializer metaclass."""
+
+        model = Follow
+        fields = ('user', 'author')
+
+    def to_representation(self, instance):
+        """Change serializer to representation."""
+        return FollowSerializer(
+            instance.author,
+            context={'request': self.context.get('request')}).data
+
+    def validate(self, data):
+        """
+        Validate the user is already subscribed on author
+        and self subscription.
+        """
+        user = self.initial_data['user']
+        author = self.initial_data['author']
+
+        if user == author:
+            raise ValidationError('Нельзя подписаться на самого себя.')
+
+        if Follow.objects.filter(user=user, author=author):
+            raise ValidationError(
+                'Вы уже подписаны на этого автора')
+        return data

@@ -2,14 +2,14 @@ from django.contrib.auth import get_user_model
 from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
-                                   HTTP_400_BAD_REQUEST)
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from followers.models import Follow
-from followers.serializers import FollowSerializer
+from followers.serializers import FollowCreateSerializer, FollowSerializer
 
 from .serializers import FoodgramUserSerializer
 
@@ -29,42 +29,27 @@ class FoodgramUserViewSet(UserViewSet):
             self.permission_classes = settings.PERMISSIONS.token_destroy
         return super().get_permissions()
 
-    @action(detail=True, methods=['post', 'delete'],
+    @action(detail=True, methods=['post'],
             permission_classes=[IsAuthenticated])
     def subscribe(self, request, id):
-        """Describes create and delete subscribe url action logic."""
-        user = request.user
+        """Describes subscription create url action logic."""
         author = get_object_or_404(User, id=id)
+        serializer = FollowCreateSerializer(
+            data={'user': request.user.id, 'author': author.id},
+            context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
-        if user == author:
-            return Response({
-                'errors': 'Нельзя подписаться на самого себя.'
-            }, status=HTTP_400_BAD_REQUEST)
-
-        exists = Follow.objects.filter(user=user, author=author).exists()
-
-        if request.method == 'POST':
-
-            if exists:
-                return Response({
-                    'errors': f'Вы уже подписаны на автора с id: {id}.'
-                }, status=HTTP_400_BAD_REQUEST)
-
-            serializer = FollowSerializer(author, data=request.data,
-                                          context={"request": request})
-            serializer.is_valid(raise_exception=True)
-            Follow.objects.create(author=author, user=user)
-            return Response(serializer.data, status=HTTP_201_CREATED)
-
-        if request.method == 'DELETE':
-
-            if not exists:
-                return Response({
-                    'errors': f'Вы не подписаны на автора с id: {id}.'
-                }, status=HTTP_400_BAD_REQUEST)
-
-            Follow.objects.get(author=author, user=user).delete()
-            return Response(status=HTTP_204_NO_CONTENT)
+    @subscribe.mapping.delete
+    def delete_subscription(self, request, id):
+        """Describes subscription delete action logic."""
+        author = get_object_or_404(User, id=id)
+        subscription, _ = Follow.objects.filter(
+            user=request.user, author=author).delete()
+        if not subscription:
+            raise ValidationError(f'Вы не подписаны на автор с id: {id}')
+        return Response(status=HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
