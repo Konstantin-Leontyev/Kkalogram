@@ -1,6 +1,6 @@
 from rest_framework.fields import SerializerMethodField
 
-from recipes.serializers import ShorthandRecipeSerializer
+from recipes.serializers import RecipeSerializer
 from users.serializers import FoodgramUserSerializer
 
 
@@ -32,7 +32,7 @@ class FollowSerializer(FoodgramUserSerializer):
             except TypeError:
                 print('Ошибка выполнения запроса.'
                       'Значение `recipes_limit` должно быть числом.')
-        return ShorthandRecipeSerializer(
+        return RecipeSerializer(
             recipes,
             many=True,
             read_only=True,

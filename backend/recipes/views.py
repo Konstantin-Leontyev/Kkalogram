@@ -1,30 +1,33 @@
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
-                                   HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND)
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from rest_framework.viewsets import ModelViewSet
 
 from carts.models import Cart
+from carts.serializers import CartSerializer
 from favorites.models import Favorite
+from favorites.serializers import FavoriteSerializer
 
 from .filters import AuthorFilter, RecipeFilter
 from .models import Recipe, RecipeIngredient
 from .permissions import IsAuthorOrReadOnly
-from .serializers import RecipeSerializer, ShorthandRecipeSerializer
+from .serializers import PostUpdateRecipeSerializer
 
 
 class RecipeViewSet(ModelViewSet):
     """Describes recipe view set."""
 
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    serializer_class = PostUpdateRecipeSerializer
     filterset_class = RecipeFilter
     filter_backends = [AuthorFilter, DjangoFilterBackend]
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
@@ -34,48 +37,46 @@ class RecipeViewSet(ModelViewSet):
         """Automatically setting recipe author field."""
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=['post', 'delete'],
+    @action(detail=True, methods=['post'],
             permission_classes=[IsAuthenticated])
     def favorite(self, request, pk):
         """Describes favorite url action logic."""
-        return self.add_delete(Favorite, 'избранном.', request, pk)
+        serializer = FavoriteSerializer(
+            data={'recipe': pk, 'user': request.user.id},
+            context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post', 'delete'],
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        favorite, _ = Favorite.objects.filter(
+            user=request.user, recipe=recipe).delete()
+        if not favorite:
+            raise ValidationError(f'Рецепта с id: {pk} нет в избранном')
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post'],
             permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk):
-        """Describes shopping_cart url action logic."""
-        return self.add_delete(Cart, 'списке покупок.', request, pk)
+        """Describes shopping_cart url action add logic."""
+        serializer = CartSerializer(
+            data={'recipe': pk, 'user': request.user.id},
+            context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
-    def add_delete(self, model, msg, request, pk):
-        """Universal add or delete function for favorite and cart actions."""
-        user = request.user
-        status = HTTP_400_BAD_REQUEST
-        if request.method == 'DELETE':
-            status = HTTP_404_NOT_FOUND
-
-        if not Recipe.objects.filter(id=pk).exists():
-            return Response({
-                'errors': f'Рецепта с id: {pk} не существует.'
-            }, status=status)
-        recipe = Recipe.objects.get(id=pk)
-        exists = model.objects.filter(user=user, recipe=recipe).exists()
-
-        if request.method == 'POST':
-            if exists:
-                return Response({
-                    'errors': f'Рецепт с id: {pk} уже в {msg}.'
-                }, status=HTTP_400_BAD_REQUEST)
-            model.objects.create(user=user, recipe=recipe)
-            serializer = ShorthandRecipeSerializer(recipe)
-            return Response(serializer.data, status=HTTP_201_CREATED)
-
-        elif request.method == 'DELETE':
-            if not exists:
-                return Response({
-                    'errors': f'Рецепта с id: {pk} нет в {msg}.'
-                }, status=HTTP_400_BAD_REQUEST)
-            model.objects.filter(user=user, recipe=recipe).delete()
-            return Response(status=HTTP_204_NO_CONTENT)
+    @shopping_cart.mapping.delete
+    def delete_shopping_cart(self, request, pk):
+        """Describes shopping_cart url action delete logic."""
+        recipe = get_object_or_404(Recipe, pk=pk)
+        shopping_cart, _ = Cart.objects.filter(
+            user=request.user, recipe=recipe).delete()
+        if not shopping_cart:
+            raise ValidationError(f'Рецепта с id: {pk} нет в списке покупок')
+        return Response(status=HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
