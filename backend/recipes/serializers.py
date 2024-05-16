@@ -167,7 +167,8 @@ class PostUpdateRecipeSerializer(ListRetrieveRecipeSerializer):
         """
         Recipe create function.
 
-        .. Note:: You should clear the instance fields before setting new values.
+        .. Note:: You should clear the instance fields before
+        setting new values.
         """
         ingredients = validated_data.pop('ingredients')
         instance.ingredients.clear()
