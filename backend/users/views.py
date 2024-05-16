@@ -11,15 +11,15 @@ from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
 from followers.models import Follow
 from followers.serializers import FollowSerializer
 
-from .serializers import CustomUserSerializer
+from .serializers import FoodgramUserSerializer
 
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
+class FoodgramUserViewSet(UserViewSet):
     """Describes custom user view set."""
 
-    serializer_class = CustomUserSerializer
+    serializer_class = FoodgramUserSerializer
     search_fields = ['email', 'username']
 
     def get_permissions(self):

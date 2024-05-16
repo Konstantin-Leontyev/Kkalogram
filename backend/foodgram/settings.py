@@ -60,9 +60,9 @@ DJOSER = {
 
     },
     "SERIALIZERS": {
-        'current_user': 'users.serializers.CustomUserSerializer',
-        'user': 'users.serializers.CustomUserSerializer',
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
+        'current_user': 'users.serializers.FoodgramUserSerializer',
+        'user': 'users.serializers.FoodgramUserSerializer',
+        'user_create': 'users.serializers.FoodgramUserCreateSerializer',
     },
 }
 

@@ -1,20 +1,20 @@
 from rest_framework.fields import SerializerMethodField
 
 from recipes.serializers import ShorthandRecipeSerializer
-from users.serializers import CustomUserSerializer
+from users.serializers import FoodgramUserSerializer
 
 
-class FollowSerializer(CustomUserSerializer):
+class FollowSerializer(FoodgramUserSerializer):
     """Describes follow serializer class."""
 
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
-    class Meta(CustomUserSerializer.Meta):
+    class Meta(FoodgramUserSerializer.Meta):
         """Describes follow serializer metaclass."""
 
         fields = ('recipes_count', 'recipes',
-                  *CustomUserSerializer.Meta.fields)
+                  *FoodgramUserSerializer.Meta.fields)
         read_only_fields = ['email', 'first_name', 'last_name', 'username']
 
     def get_recipes_count(self, instance):

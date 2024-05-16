@@ -8,7 +8,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from ingredients.models import Ingredient
 from tags.models import Tag
 from tags.serializers import TagSerializer
-from users.serializers import CustomUserSerializer
+from users.serializers import FoodgramUserSerializer
 
 from .models import Recipe, RecipeIngredient
 
@@ -40,7 +40,7 @@ class ShorthandRecipeSerializer(ModelSerializer):
 class ReadRecipeSerializer(ModelSerializer):
     """Describes read recipe serializer."""
 
-    author = CustomUserSerializer(read_only=True)
+    author = FoodgramUserSerializer(read_only=True)
     image = Base64ImageField()
     ingredients = SerializerMethodField()
     is_favorited = SerializerMethodField()

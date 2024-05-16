@@ -1,12 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import CustomUserViewSet
+from .views import FoodgramUserViewSet
 
 app_name = 'users'
 
 users = DefaultRouter()
-users.register('users', CustomUserViewSet)
+users.register('users', FoodgramUserViewSet)
 
 urlpatterns = [
     path('', include(users.urls)),

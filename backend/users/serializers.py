@@ -11,7 +11,7 @@ from users.constants import USERNAME_FIELD_MAX_LENGTH
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class FoodgramUserCreateSerializer(UserCreateSerializer):
     """Describes custom user create serializer class."""
 
     email = EmailField(
@@ -51,7 +51,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         }
 
 
-class CustomUserSerializer(UserSerializer):
+class FoodgramUserSerializer(UserSerializer):
     """Describes custom user serializer class."""
 
     is_subscribed = SerializerMethodField()
