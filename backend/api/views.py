@@ -18,14 +18,14 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from api.filters import AuthorFilter, IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (FoodgramUserSerializer, IngredientSerializer,
+from api.serializers import (FollowCreateSerializer, FollowSerializer,
+                             FoodgramUserSerializer, IngredientSerializer,
                              PostUpdateRecipeSerializer, TagSerializer)
 from carts.models import Cart
 from carts.serializers import CartSerializer
 from favorites.models import Favorite
 from favorites.serializers import FavoriteSerializer
 from followers.models import Follow
-from followers.serializers import FollowCreateSerializer, FollowSerializer
 from ingredients.models import Ingredient
 from recipes.models import Recipe, RecipeIngredient
 from tags.models import Tag
