@@ -6,7 +6,7 @@ from rest_framework.serializers import (CharField, EmailField,
 from rest_framework.validators import UniqueValidator
 
 from followers.models import Follow
-from users.constants import USERNAME_FIELD_MAX_LENGTH
+from api.constants import USERNAME_FIELD_MAX_LENGTH
 
 User = get_user_model()
 

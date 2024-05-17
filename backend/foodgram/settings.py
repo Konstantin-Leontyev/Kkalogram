@@ -60,9 +60,9 @@ DJOSER = {
 
     },
     "SERIALIZERS": {
-        'current_user': 'users.serializers.FoodgramUserSerializer',
-        'user': 'users.serializers.FoodgramUserSerializer',
-        'user_create': 'users.serializers.FoodgramUserCreateSerializer',
+        'current_user': 'api.serializers.FoodgramUserSerializer',
+        'user': 'api.serializers.FoodgramUserSerializer',
+        'user_create': 'api.serializers.FoodgramUserCreateSerializer',
     },
 }
 
@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
+    'api.apps.ApiConfig',
     'carts.apps.CartsConfig',
     'core.apps.CoreConfig',
     'favorites.apps.FavoritesConfig',

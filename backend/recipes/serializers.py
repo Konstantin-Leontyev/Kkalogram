@@ -8,7 +8,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from ingredients.models import Ingredient
 from tags.models import Tag
 from tags.serializers import TagSerializer
-from users.serializers import FoodgramUserSerializer
+from api.serializers import FoodgramUserSerializer
 
 from .models import Recipe, RecipeIngredient
 

@@ -11,7 +11,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from followers.models import Follow
 from followers.serializers import FollowCreateSerializer, FollowSerializer
 
-from .serializers import FoodgramUserSerializer
+from api.serializers import FoodgramUserSerializer
 
 User = get_user_model()
 

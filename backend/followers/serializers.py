@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 from followers.models import Follow
 from recipes.serializers import RecipeSerializer
-from users.serializers import FoodgramUserSerializer
+from api.serializers import FoodgramUserSerializer
 
 
 class FollowSerializer(FoodgramUserSerializer):
