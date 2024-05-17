@@ -1,27 +1,93 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.conf import settings
+from djoser.views import UserViewSet
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from api.filters import AuthorFilter, IngredientFilter, RecipeFilter
+from api.permissions import IsAuthorOrReadOnly
+from api.serializers import (FollowCreateSerializer, FollowSerializer,
+                             FoodgramUserSerializer, IngredientSerializer,
+                             PostUpdateRecipeSerializer, TagSerializer)
 from carts.models import Cart
 from carts.serializers import CartSerializer
 from favorites.models import Favorite
 from favorites.serializers import FavoriteSerializer
+from followers.models import Follow
+from ingredients.models import Ingredient
+from recipes.models import Recipe, RecipeIngredient
+from tags.models import Tag
 
-from .filters import AuthorFilter, RecipeFilter
-from .models import Recipe, RecipeIngredient
-from .permissions import IsAuthorOrReadOnly
-from .serializers import PostUpdateRecipeSerializer
+User = get_user_model()
+
+
+class FoodgramUserViewSet(UserViewSet):
+    """Describes custom user view set."""
+
+    serializer_class = FoodgramUserSerializer
+    search_fields = ['email', 'username']
+
+    def get_permissions(self):
+        """Add custom permission for get requests on users/me endpoint."""
+        if (self.action == 'me' and self.request
+                and self.request.method == 'GET'):
+            self.permission_classes = settings.PERMISSIONS.token_destroy
+        return super().get_permissions()
+
+    @action(detail=True, methods=['post'],
+            permission_classes=[IsAuthenticated])
+    def subscribe(self, request, id):
+        """Describes subscription create url action logic."""
+        author = get_object_or_404(User, id=id)
+        serializer = FollowCreateSerializer(
+            data={'user': request.user.id, 'author': author.id},
+            context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def delete_subscription(self, request, id):
+        """Describes subscription delete action logic."""
+        author = get_object_or_404(User, id=id)
+        subscription, _ = Follow.objects.filter(
+            user=request.user, author=author).delete()
+        if not subscription:
+            raise ValidationError(f'Вы не подписаны на автор с id: {id}')
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    @action(detail=False, permission_classes=[IsAuthenticated])
+    def subscriptions(self, request):
+        """Describes subscriptions url action logic."""
+        user = request.user
+        queryset = User.objects.filter(following__user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = FollowSerializer(pages,
+                                      many=True,
+                                      context={'request': request})
+        return self.get_paginated_response(serializer.data)
+
+
+class IngredientViewSet(ReadOnlyModelViewSet):
+    """Describes read only ingredient view set class."""
+
+    pagination_class = None
+    filter_backends = [IngredientFilter]
+    search_fields = ['^name']
+    serializer_class = IngredientSerializer
+    queryset = Ingredient.objects.all()
 
 
 class RecipeViewSet(ModelViewSet):
@@ -106,3 +172,11 @@ class RecipeViewSet(ModelViewSet):
         page.showPage()
         page.save()
         return response
+
+
+class TagViewSet(ReadOnlyModelViewSet):
+    """Describes read only tag view set class."""
+
+    pagination_class = None
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

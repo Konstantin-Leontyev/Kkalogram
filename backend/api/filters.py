@@ -3,13 +3,22 @@ from django_filters.rest_framework.filters import (AllValuesMultipleFilter,
                                                    BooleanFilter)
 from rest_framework.filters import SearchFilter
 
-from .models import Recipe
+from recipes.models import Recipe
 
 
 class AuthorFilter(SearchFilter):
     """Describes custom filter for recipe model author field."""
 
     search_param = 'author'
+
+
+class IngredientFilter(SearchFilter):
+    """
+    Custom ingredient filter class.
+    Overwrite default search_param from search to name.
+    """
+
+    search_param = 'name'
 
 
 class RecipeFilter(FilterSet):
