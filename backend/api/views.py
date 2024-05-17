@@ -16,19 +16,19 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from api.filters import AuthorFilter, IngredientFilter, RecipeFilter
-from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (FollowCreateSerializer, FollowSerializer,
-                             FoodgramUserSerializer, IngredientSerializer,
-                             PostUpdateRecipeSerializer, TagSerializer)
 from carts.models import Cart
-from carts.serializers import CartSerializer
 from favorites.models import Favorite
-from favorites.serializers import FavoriteSerializer
 from followers.models import Follow
 from ingredients.models import Ingredient
 from recipes.models import Recipe, RecipeIngredient
 from tags.models import Tag
+
+from .filters import AuthorFilter, IngredientFilter, RecipeFilter
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (CartSerializer, FavoriteSerializer,
+                          FollowCreateSerializer, FollowSerializer,
+                          FoodgramUserSerializer, IngredientSerializer,
+                          PostUpdateRecipeSerializer, TagSerializer)
 
 User = get_user_model()
 

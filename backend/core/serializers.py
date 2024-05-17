@@ -1,8 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
-from api.serializers import RecipeSerializer
-
 from .models import UserRecipeModel
 
 
@@ -24,6 +22,7 @@ class UserRecipeSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         """Change serializer to representation."""
+        from api.serializers import RecipeSerializer
         return RecipeSerializer(instance.recipe, context={
             'request': self.context.get('request')
         }).data
