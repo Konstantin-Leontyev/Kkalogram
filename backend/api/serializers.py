@@ -11,12 +11,33 @@ from rest_framework.serializers import (CharField, EmailField, ModelSerializer,
 from rest_framework.validators import UniqueValidator
 
 from api.constants import USERNAME_FIELD_MAX_LENGTH
+from carts.models import Cart
+from core.serializers import UserRecipeSerializer
+from favorites.models import Favorite
 from followers.models import Follow
 from ingredients.models import Ingredient
 from recipes.models import Recipe, RecipeIngredient
 from tags.models import Tag
 
 User = get_user_model()
+
+
+class CartSerializer(UserRecipeSerializer):
+    """Describes a cart serializer."""
+
+    class Meta(UserRecipeSerializer.Meta):
+        """Describes a cart serializer metaclass."""
+
+        model = Cart
+
+
+class FavoriteSerializer(UserRecipeSerializer):
+    """Describes a favorite serializer."""
+
+    class Meta(UserRecipeSerializer.Meta):
+        """Describes a favorite serializer metaclass."""
+
+        model = Favorite
 
 
 class FoodgramUserCreateSerializer(UserCreateSerializer):
