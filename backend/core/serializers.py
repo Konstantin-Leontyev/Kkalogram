@@ -1,7 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
-from recipes.serializers import RecipeSerializer
+from api.serializers import RecipeSerializer
 
 from .models import UserRecipeModel
 

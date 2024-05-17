@@ -6,11 +6,10 @@ from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               PositiveSmallIntegerField, TextField,
                               UniqueConstraint)
 
+from core.constants import (MAX_COOKING_TIME, MIN_COOKING_TIME,
+                            MIN_INGREDIENT_AMOUNT, NAME_FIELD_MAX_LENGTH)
 from ingredients.models import Ingredient
 from tags.models import Tag
-
-from .constants import (MAX_COOKING_TIME, MIN_COOKING_TIME,
-                        MIN_INGREDIENT_AMOUNT, NAME_FIELD_MAX_LENGTH)
 
 User = get_user_model()
 
