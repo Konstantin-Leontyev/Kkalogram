@@ -1,6 +1,6 @@
 from django.db.models import CharField, Model, UniqueConstraint
 
-from .constants import MEASUREMENT_UNIT_MAX_LENGTH, NAME_FIELD_MAX_LENGTH
+from core.constants import MEASUREMENT_UNIT_MAX_LENGTH, NAME_FIELD_MAX_LENGTH
 
 
 class Ingredient(Model):

@@ -9,9 +9,12 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from api.serializers import FoodgramUserSerializer, TagSerializer
+from api.filters import IngredientFilter
+from api.serializers import (FoodgramUserSerializer, IngredientSerializer,
+                             TagSerializer)
 from followers.models import Follow
 from followers.serializers import FollowCreateSerializer, FollowSerializer
+from ingredients.models import Ingredient
 from tags.models import Tag
 
 User = get_user_model()
@@ -62,6 +65,16 @@ class FoodgramUserViewSet(UserViewSet):
                                       many=True,
                                       context={'request': request})
         return self.get_paginated_response(serializer.data)
+
+
+class IngredientViewSet(ReadOnlyModelViewSet):
+    """Describes read only ingredient view set class."""
+
+    pagination_class = None
+    filter_backends = [IngredientFilter]
+    search_fields = ['^name']
+    serializer_class = IngredientSerializer
+    queryset = Ingredient.objects.all()
 
 
 class TagViewSet(ReadOnlyModelViewSet):

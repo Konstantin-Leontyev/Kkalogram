@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueValidator
 
 from api.constants import USERNAME_FIELD_MAX_LENGTH
 from followers.models import Follow
+from ingredients.models import Ingredient
 from tags.models import Tag
 
 User = get_user_model()
@@ -75,6 +76,20 @@ class FoodgramUserSerializer(UserSerializer):
         return (user.is_authenticated
                 and Follow.objects.filter(author=instance.id,
                                           user=user).exists())
+
+
+class IngredientSerializer(ModelSerializer):
+    """Describes ingredient serializer class."""
+
+    class Meta:
+        """Describes ingredient serializer metaclass."""
+
+        model = Ingredient
+        fields = (
+            'id',
+            'measurement_unit',
+            'name',
+        )
 
 
 class TagSerializer(ModelSerializer):
