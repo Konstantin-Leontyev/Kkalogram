@@ -2,9 +2,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
+from api.serializers import FoodgramUserSerializer
 from followers.models import Follow
 from recipes.serializers import RecipeSerializer
-from api.serializers import FoodgramUserSerializer
 
 
 class FollowSerializer(FoodgramUserSerializer):

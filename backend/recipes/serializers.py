@@ -5,10 +5,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
+from api.serializers import FoodgramUserSerializer, TagSerializer
 from ingredients.models import Ingredient
 from tags.models import Tag
-from tags.serializers import TagSerializer
-from api.serializers import FoodgramUserSerializer
 
 from .models import Recipe, RecipeIngredient
 

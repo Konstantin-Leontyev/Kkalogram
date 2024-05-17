@@ -6,5 +6,4 @@ urlpatterns = [
     path('api/', include('api.urls', namespace='api')),
     path('api/', include('ingredients.urls', namespace='ingredients')),
     path('api/', include('recipes.urls', namespace='recipes')),
-    path('api/', include('tags.urls', namespace='tags')),
 ]

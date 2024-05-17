@@ -7,11 +7,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from api.serializers import FoodgramUserSerializer, TagSerializer
 from followers.models import Follow
 from followers.serializers import FollowCreateSerializer, FollowSerializer
-
-from api.serializers import FoodgramUserSerializer
+from tags.models import Tag
 
 User = get_user_model()
 
@@ -61,3 +62,11 @@ class FoodgramUserViewSet(UserViewSet):
                                       many=True,
                                       context={'request': request})
         return self.get_paginated_response(serializer.data)
+
+
+class TagViewSet(ReadOnlyModelViewSet):
+    """Describes read only tag view set class."""
+
+    pagination_class = None
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

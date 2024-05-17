@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from rest_framework.serializers import (CharField, EmailField,
+from rest_framework.serializers import (CharField, EmailField, ModelSerializer,
                                         SerializerMethodField)
 from rest_framework.validators import UniqueValidator
 
-from followers.models import Follow
 from api.constants import USERNAME_FIELD_MAX_LENGTH
+from followers.models import Follow
+from tags.models import Tag
 
 User = get_user_model()
 
@@ -74,3 +75,18 @@ class FoodgramUserSerializer(UserSerializer):
         return (user.is_authenticated
                 and Follow.objects.filter(author=instance.id,
                                           user=user).exists())
+
+
+class TagSerializer(ModelSerializer):
+    """Describes tag serializer class."""
+
+    class Meta:
+        """Describes tag serializer metaclass."""
+
+        model = Tag
+        fields = (
+            'color',
+            'id',
+            'name',
+            'slug',
+        )
