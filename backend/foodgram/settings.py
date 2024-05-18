@@ -121,8 +121,8 @@ ROOT_URLCONF = 'foodgram.urls'
 
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
-STATIC_URL = '/static_backend/'
-STATIC_ROOT = BASE_DIR / 'static_backend'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
 TEMPLATES = [
     {

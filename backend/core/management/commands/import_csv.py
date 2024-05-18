@@ -10,7 +10,7 @@ from tags.models import Tag
 
 User = get_user_model()
 
-CSV_ROOT = os.path.join(os.pardir, 'data')
+CSV_ROOT = 'data'
 
 
 class Command(BaseCommand):
