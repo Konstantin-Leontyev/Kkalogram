@@ -1,26 +1,31 @@
 import csv
-import os
 
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from ingredients.models import Ingredient
 # from recipes.models import Recipe
 from tags.models import Tag
 
-User = get_user_model()
+# User = get_user_model()
 
 CSV_ROOT = 'data'
 
 
 class Command(BaseCommand):
+    """
+    To add new csv data:
+    1. Add csv into data folder. A csv file should be named as it's model.
+    2. Import model;
+    3. Add model into tables dict. Key should be named as model in lower case.
+    """
     help = 'loading ingredients from data in json'
 
     tables = {
         'ingredients': Ingredient,
         # 'recipe': Recipe,
         'tags': Tag,
-        'users': User,
+        # 'users': User,
     }
 
     def handle(self, *args, **options):

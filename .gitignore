@@ -135,3 +135,7 @@ dmypy.json
 media/
 tests/
 backend/users/tests/
+data/
+docs/
+.github/
+infra/
