@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
@@ -7,7 +6,7 @@ from dotenv.main import load_dotenv
 
 load_dotenv()
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split()
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split()
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -24,21 +23,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'users.User'
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_URLS_REGEX = r'^/api/.*$'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 DEBUG = os.getenv('DEBUG') == 'True'
+
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'django_db_name'),
+            'USER': os.getenv('POSTGRES_USER', 'django_user'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'django_user_password'),
+            'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            'PORT': os.getenv('DB_PORT', 5432)
+        }
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -46,31 +55,42 @@ DJOSER = {
     'HIDE_USERS': False,
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
-        # "recipe": ("api.permissions.IsAdminUser,",),
-        # "recipe_list": ("api.permissions.IsAdminUser",),
-        'user': ('rest_framework.permissions.IsAuthenticated',),
-        'user_list': ('rest_framework.permissions.AllowAny',)
+        'user': ('rest_framework.permissions.AllowAny',),
+        'user_list': ('rest_framework.permissions.AllowAny',),
+
     },
     "SERIALIZERS": {
-            "user": "users.serializers.CustomUserCreateSerializer",
-            "user_list": "users.serializers.CustomUserCreateSerializer",
-            "current_user": "users.serializers.CustomUserCreateSerializer",
-            "user_create": "users.serializers.CustomUserCreateSerializer",
-        },
+        'current_user': 'api.serializers.FoodgramUserSerializer',
+        'user': 'api.serializers.FoodgramUserSerializer',
+        'user_create': 'api.serializers.FoodgramUserCreateSerializer',
+    },
 }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'users.apps.UsersAuthConfig',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'colorfield',
+    'corsheaders',
+    'django_filters',
+    'djoser',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders',
-    'djoser',
+
+    'api.apps.ApiConfig',
+    'carts.apps.CartsConfig',
+    'core.apps.CoreConfig',
+    'favorites.apps.FavoritesConfig',
+    'followers.apps.FollowersConfig',
+    'ingredients.apps.IngredientsConfig',
+    'recipes.apps.RecipesConfig',
+    'tags.apps.TagsConfig',
     'users.apps.UsersConfig',
+
 ]
 
 LANGUAGE_CODE = 'ru-RU'
@@ -87,12 +107,13 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 6,
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 }
 
@@ -100,12 +121,8 @@ ROOT_URLCONF = 'foodgram.urls'
 
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
 TEMPLATES = [
     {
@@ -126,8 +143,6 @@ TEMPLATES = [
 TIME_ZONE = 'UTC'
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
-
-USERNAME_MAX_LENGTH = 150
 
 USE_I18N = True
 

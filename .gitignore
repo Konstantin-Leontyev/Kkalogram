@@ -130,3 +130,12 @@ dmypy.json
 
 # .idea
 .idea
+
+# media
+media/
+tests/
+backend/users/tests/
+data/
+docs/
+.github/
+infra/
