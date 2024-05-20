@@ -135,5 +135,4 @@ dmypy.json
 media/
 tests/
 backend/users/tests/
-data/
 
