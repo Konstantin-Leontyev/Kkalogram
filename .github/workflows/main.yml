@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  checkout-and-print-tree:
+  checkout-and-test-flake8:
     runs-on: ubuntu-latest
 
     steps:
