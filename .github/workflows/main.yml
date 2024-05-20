@@ -3,7 +3,7 @@ name: Main Foodgram Workflow
 on:
   push:
     branches:
-      - master--cached
+      - master
 
 jobs:
   checkout-and-print-tree:
@@ -23,6 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip 
           pip install flake8==6.0.0 flake8-isort==6.0.0
+          pip install -r ./backend/requirements.txt
 
       - name: Test with flake8
         run: |
