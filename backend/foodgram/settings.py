@@ -95,6 +95,9 @@ INSTALLED_APPS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / MEDIA_URL
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
