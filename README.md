@@ -1,7 +1,7 @@
 # Проект Foodgram
 
 ### Технологии
-![example workflow](https://github.com/Konstantin-Leontyev/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)  
+![example workflow](https://github.com/Konstantin-Leontyev/foodgram-project-react/actions/workflows/main.yml/badge.svg)  
   
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
@@ -24,19 +24,17 @@
 <a name="description"><h3>Описание проекта</h3></a>
 ___
 
-Проект YaMDb собирает отзывы пользователей на произведения. Сами произведения в YaMDb не хранятся, здесь нельзя посмотреть фильм или послушать музыку. 
+«Фудграм» — сайт, на котором пользователи могут публиковать свои рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. 
+Пользователям сайта также доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
 
-Произведения делятся на категории, такие как «Книги», «Фильмы», «Музыка». Например, в категории «Книги» могут быть произведения «Винни-Пух и все-все-все» и «Марсианские хроники», а в категории «Музыка» — песня «Давеча» группы «Жуки» и вторая сюита Баха. Список категорий может быть расширен (например, можно добавить категорию «Изобразительное искусство» или «Ювелирка»).
-
-Произведению может быть присвоен жанр из списка предустановленных (например, «Сказка», «Рок» или «Артхаус»).
-
-Добавлять произведения, категории и жанры может только администратор.
-
-Благодарные или возмущённые пользователи оставляют к произведениям текстовые отзывы и ставят произведению оценку в диапазоне от одного до десяти (целое число); из пользовательских оценок формируется усреднённая оценка произведения — рейтинг (целое число). На одно произведение пользователь может оставить только один отзыв.
-
-Пользователи могут оставлять комментарии к отзывам.
-
-Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
+Проект состоит из следующих страниц: 
+* главная — список из шести последних опубликован рецептов, отсортированных по дате публикации «от новых к старым».
+* страница рецепта — полное описание рецепта. У авторизованных пользователей доступна возможность добавить рецепт в избранное и список покупок, а также подписаться на автора рецепта.
+автора.
+* страница подписок - список подписок пользователя, с возможностью отменить подписку.
+* избранное - список избранных рецептов, с возможностью обновления ингредиентов в список покупок.
+* список покупок - список ингредиентов необходимых к приобретению для приготовления добавленных рецептов.
+* создание и редактирование рецепта.
 
 <p align="right">(<a href="#description">Вернуться в начало</a>)</p>
 
@@ -45,7 +43,7 @@ ___
 * Ресурс **users**: пользователи.
 * Ресурс **followers**: сервис подписок.
 * Ресурс **tags**: теги
-* Ресурс **favorites**: жанры произведений. Одно произведение может быть привязано к нескольким жанрам.
+* Ресурс **favorites**: избранное.
 * Ресурс **carts**: корзина покупок.
 * Ресурс **ingredients**: ингредиенты.
 * Ресурс **recipes**: рецепты.
@@ -58,129 +56,91 @@ ___
 
 <a name="start"><h3>Как запустить проект:</h3></a>
 ___
+Проведите подготовку своего сервера к запуску проекта.
 
-Клонируйте репозиторий проекта на свой локальный компьютер по SSH ссылке:
+* Подключитесь к своему удаленному серверу. 
 
-```angular2html
-git@github.com:Konstantin-Leontyev/foodgram-project-react.git
-```
+* Обновите систему:
+  
+  ```angular2html
+  sudo apt-get update && sudo apt-get -y install -f && sudo apt-get -y full-upgrade && sudo apt-get -y autoremove && sudo apt-get -y autoclean && sudo apt-get -y clean
+  ```
 
-Подключитесь к своему удаленному серверу:
+* Установите docker:
+  ```angular2html
+  sudo apt install docker.io 
+  ```
 
-```angular2html
-ssh <server user>@<server IP>
-```
+* Установите docker-compose:
+  
+  ```angular2html
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  ```
 
-Обновите систему:
+* Установите права пользователя для docker-compose:
+  ```angular2html
+  sudo chmod +x /usr/local/bin/docker-compose
+  ```
 
-```angular2html
-sudo apt-get update && sudo apt-get -y install -f && sudo apt-get -y full-upgrade && sudo apt-get -y autoremove && sudo apt-get -y autoclean && sudo apt-get -y clean
-```
+* В домашней директории пользователя /home/<you_user>/, создайте папку foodgram.
+  ```angular2html
+  mkdir foodgram
+  ```
 
-Установите docker на сервер:
-```angular2html
-sudo apt install docker.io 
-```
+Проведите подготовку проекта на локальном компьютере:
 
-Установите docker-compose на сервер:
+* Клонируйте репозиторий проекта на свой локальный компьютер по SSH ссылке:
 
-```angular2html
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-```
+  ```angular2html
+  git@github.com:Konstantin-Leontyev/foodgram-project-react.git
+  ```
 
-Установите права пользователя для docker-compose:
-```angular2html
-sudo chmod +x /usr/local/bin/docker-compose
-```
-Локально отредактируйте файл infra/nginx.conf и в строке server_name впишите свой IP:
+* Создайте .env файл и заполните его согласно примеру в .env.example:
 
-Скопируйте файлы docker-compose.yml и nginx.conf из директории infra на сервер:
-```angular2html
-scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
-```
-```angular2html
-scp nginx.conf <username>@<host>:/home/<username>/nginx.conf
-```
+* Скопируйте файлы docker-compose.yml .env в папку foodgram на удаленном сервере.
 
-Создайте .env файл и заполните его согласно примеру .env.example:
-```angular2html
-# Переменные для Django-проекта:
-ALLOWED_HOSTS=xxx.xxx.xxx.xxx 127.0.0.1 localhost https://yourdomain
-DEBUG=False
-SECRET_KEY=key from setting
+  ```angular2html
+  scp -i <path_to_your_SSH_key>/<your_SSH_key_name> docker-compose.yml .env \ 
+    <your_username>@<your_server_ip></your_server_ip>:/home/<your_username>/foodgram/
+  ```
+  
+* На удаленном сервере запустите сборку проекта:
+  ```angular2html
+  sudo docker-compose up -d --build
+  ```
 
-# Переменные для PostgreSQL:
-POSTGRES_DB=postgres_db_name
-POSTGRES_USER=postgres_user
-POSTGRES_PASSWORD=project_db_user_password
+Для использования Workflow:
 
-# Переменные для Doker контейнера:
-DB_HOST=имя контейнера базы данных или 127.0.0.1
-DB_PORT=5432
+* Добавьте в Secrets GitHub переменные окружения:
 
-# Переменные для авто тестов:
-PROJECT_DIR_NAME=backend
-```
-Для работы с Workflow добавьте в Secrets GitHub переменные окружения:
-
-```
-DB_ENGINE=<django.db.backends.postgresql>
-DB_NAME=<имя базы данных postgres>
-DB_USER=<пользователь бд>
-DB_PASSWORD=<пароль>
-DB_HOST=<db>
-DB_PORT=<5432>
-
-DOCKER_PASSWORD=<пароль от DockerHub>
-DOCKER_USERNAME=<имя пользователя>
-
-SECRET_KEY=<секретный ключ проекта django>
-
-USER=<username для подключения к серверу>
-HOST=<IP сервера>
-PASSPHRASE=<пароль для сервера, если он установлен>
-SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
-
-TELEGRAM_TO=<ID чата, в который придет сообщение>
-TELEGRAM_TOKEN=<токен вашего бота>
-```
+  ``` 
+  DOCKER_PASSWORD=<your_DockerHub_password>
+  DOCKER_USERNAME=<your_DockerHub_username>
+  
+  TELEGRAM_TO=<your_telegram_ID>
+  TELEGRAM_TOKEN=<your_telegram_bot_token>
+  
+  HOST=<your_remote_server_IP>
+  PASSPHRASE=<your_remote_server_passphrase>
+  SSH_KEY=<your_privet_ssh_key (для получения команда: cat ~/.ssh/id_rsa)>
+  USER=<your_remote_sever_username>
+  ```
 
 Workflow состоит из трёх шагов:
 
-Проверка кода на соответствие PEP8
-Сборка и публикация образа бекенда на DockerHub.
-Автоматический деплой на удаленный сервер.
-Отправка уведомления в телеграм-чат.
+* Проверка кода на соответствие PEP8
+* Сборка и публикация образа бекенда на DockerHub.
+* Автоматический деплой на удаленный сервер.
+* Отправка уведомления в телеграм-чат.
 
-На удаленном сервере соберите docker-compose:
-```angular2html
-sudo docker-compose up -d --build
-```
+Сбор статики, применение миграций и загрузка базового набора ингредиентов будут выполнены автоматически. 
 
-После успешной сборки на сервере выполните команды (только после первого деплоя):
-Соберите статические файлы:
-sudo docker-compose exec backend python manage.py collectstatic --noinput
-Примените миграции:
-sudo docker-compose exec backend python manage.py migrate --noinput
-Загрузите ингридиенты в базу данных (необязательно):
-Если файл не указывать, по умолчанию выберется ingredients.json
-sudo docker-compose exec backend python manage.py load_ingredients <Название файла из директории data>
-Создать суперпользователя Django:
-sudo docker-compose exec backend python manage.py createsuperuser
-Проект будет доступен по вашему IP
+[//]: # (Создать суперпользователя Django:)
 
+[//]: # (sudo docker-compose exec backend python manage.py createsuperuser)
 
-<p align="right">(<a href="#description">Вернуться в начало</a>)</p>
+[//]: # (Проект будет доступен по вашему IP)
 
-<a name="command"><h3>Знакомство с проектом</h3></a>
-___
-
-Для ознакомления с функционалом проекта можно:
-
-Создать и заполнить тестовую базу данных.
-```
-python3 manage.py import_csv
-```
 
 <p align="right">(<a href="#description">Вернуться в начало</a>)</p>
 

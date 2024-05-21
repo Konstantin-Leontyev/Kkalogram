@@ -26,7 +26,7 @@ services:
 
   frontend:
 #    container_name: foodgram_frontend
-    image: kaleontyev/foodgram_frontend
+    image: kaleontyev/foodgram_frontend:latest
     command: cp -r /app/build/. /frontend_static/
     env_file: .env
     volumes:
