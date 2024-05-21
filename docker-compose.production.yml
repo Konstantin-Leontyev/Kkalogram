@@ -16,7 +16,7 @@ services:
 
   backend:
 #    container_name: foodgram_backend
-    image: kaleontyev/foodgram_backend
+    image: kaleontyev/foodgram_backend:latest
     depends_on:
       - db
     env_file: .env
@@ -35,7 +35,7 @@ services:
 
   gateway:
 #    container_name: foodgram_gateway
-    image: kaleontyev/foodgram_gateway
+    image: kaleontyev/foodgram_gateway:latest
     ports:
       - 8000:80
     volumes:
