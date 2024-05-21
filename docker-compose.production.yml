@@ -39,5 +39,5 @@ services:
     ports:
       - 8000:80
     volumes:
-      - static:/staticfiles/
-      - media:/media
+      - static:/staticfiles
+      - media:/media/
