@@ -3,18 +3,10 @@ from rest_framework.routers import DefaultRouter
 
 from api.views import (FoodgramUserViewSet, IngredientViewSet, RecipeViewSet,
                        TagViewSet)
-from core.views import BaseAPIRootView
 
 app_name = 'api'
 
-
-class RuDefaultRouter(DefaultRouter):
-    """Represent api page on local language."""
-
-    APIRootView = BaseAPIRootView
-
-
-api = RuDefaultRouter()
+api = DefaultRouter()
 api.register('users', FoodgramUserViewSet)
 api.register('ingredients', IngredientViewSet)
 api.register('recipes', RecipeViewSet)
