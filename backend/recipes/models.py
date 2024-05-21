@@ -37,7 +37,7 @@ class Recipe(Model):
         verbose_name='Время приготовления',
     )
     image = ImageField(
-        upload_to='media/',
+        upload_to='recipes/images/',
         validators=[
             validate_image_file_extension
         ],
@@ -63,6 +63,7 @@ class Recipe(Model):
     class Meta:
         """Describes follow model metaclass."""
 
+        ordering = ['-id']
         default_related_name = 'recipes'
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
