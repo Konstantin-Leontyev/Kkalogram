@@ -22,6 +22,7 @@ services:
     env_file: .env
     volumes:
       - static:/backend_static
+      - media:/media
 
 
   frontend:
@@ -33,7 +34,7 @@ services:
       - static:/frontend_static
 
   gateway:
-#    container_name: gateway
+#    container_name: foodgram_gateway
     image: kaleontyev/foodgram_gateway
     ports:
       - 8000:80
