@@ -22,7 +22,7 @@ services:
     env_file: .env
     volumes:
       - static:/app/collected_static
-      - media:/media/images
+      - media:/media
 
 
   frontend:
