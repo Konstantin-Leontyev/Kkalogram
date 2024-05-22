@@ -21,7 +21,7 @@ services:
     env_file: .env
     volumes:
       - static:/app/collected_static
-      - media:/app/media
+      - media:/media
 
   frontend:
     container_name: frontend
@@ -41,4 +41,4 @@ services:
       - 8000:80
     volumes:
       - static:/staticfiles
-      - media:/app/media
+      - media:/media
