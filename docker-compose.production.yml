@@ -7,14 +7,14 @@ volumes:
 
 services:
   db:
-    container_name: db
+#    container_name: db
     image: postgres:13.10
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    container_name: backend
+#    container_name: backend
     image: kaleontyev/foodgram_backend:latest
     depends_on:
       - db
@@ -24,7 +24,7 @@ services:
       - media:/media
 
   frontend:
-    container_name: frontend
+#    container_name: frontend
     image: kaleontyev/foodgram_frontend:latest
     command: cp -r /app/build/. /frontend_static/
     env_file: .env
@@ -32,7 +32,7 @@ services:
       - static:/frontend_static
 
   gateway:
-    container_name: gateway
+#    container_name: gateway
     image: kaleontyev/foodgram_gateway:latest
     depends_on:
       - backend
