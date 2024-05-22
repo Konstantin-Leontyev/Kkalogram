@@ -25,8 +25,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_URLS_REGEX = r'^/api/.*$'
+# CSRF_TRUSTED_ORIGINS = [os.getenv('CSRF_TRUSTED_ORIGINS', 'default-value')]
 
 DEBUG = os.getenv('DEBUG') == 'True'
 
