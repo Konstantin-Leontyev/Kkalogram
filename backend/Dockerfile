@@ -5,7 +5,8 @@ RUN apt-get update && \
     apt-get -y full-upgrade && \
     apt-get -y autoremove && \
     apt-get -y autoclean && \
-    apt-get -y clean
+    apt-get -y clean && \
+    apt-get install -y libpq-dev gcc netcat-traditional
 
 WORKDIR /app
 
