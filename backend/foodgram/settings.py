@@ -25,8 +25,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_URLS_REGEX = r'^/api/.*$'
 
 DEBUG = os.getenv('DEBUG') == 'True'
 
