@@ -17,13 +17,12 @@ services:
 #    container_name: backend
     image: kaleontyev/foodgram_backend
     env_file: .env
-    command: cp -r /app/collected_static/. /backend_static/static/
     depends_on:
       - db
       - frontend
     volumes:
-      - static:/backend_static/
-      - media:/app/media/
+      - static:/backend_static
+      - media:/media
 
   frontend:
 #    container_name: frontend
@@ -31,7 +30,7 @@ services:
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
-      - static:/frontend_static/
+      - static:/frontend_static
 
   gateway:
 #    container_name: gateway
@@ -42,5 +41,5 @@ services:
     ports:
       - 8000:80
     volumes:
-      - static:/staticfiles/
-      - media:/media/
+      - static:/staticfiles
+      - media:/media
