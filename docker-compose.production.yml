@@ -20,6 +20,7 @@ services:
     command: cp -r /app/collected_static/. /backend_static/static/
     depends_on:
       - db
+      - frontend
     volumes:
       - static:/backend_static/
       - media:/app/media/
