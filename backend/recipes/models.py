@@ -64,9 +64,6 @@ class Recipe(Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
-    def __str__(self):
-        return self.name
-
 
 class RecipeIngredient(Model):
     """Describes recipe ingredient model class."""
