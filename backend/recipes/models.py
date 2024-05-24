@@ -38,9 +38,6 @@ class Recipe(Model):
     )
     image = ImageField(
         upload_to='images/',
-        validators=[
-            validate_image_file_extension
-        ],
         verbose_name='Изображение',
     )
     ingredients = ManyToManyField(
