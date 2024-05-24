@@ -25,13 +25,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
-
 DEBUG = os.getenv('DEBUG') == 'True'
 
 if DEBUG:
@@ -79,7 +72,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'colorfield',
-    'corsheaders',
     'django_filters',
     'djoser',
     'rest_framework',
@@ -105,7 +97,6 @@ MEDIA_ROOT = '/media'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
