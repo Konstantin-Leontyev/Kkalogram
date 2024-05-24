@@ -27,3 +27,5 @@ class Ingredient(Model):
                 name='Ингредиент уже существует.',
             )
         ]
+
+
