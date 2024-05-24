@@ -27,9 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # CORS_ORIGIN_ALLOW_ALL = False
 # CORS_URLS_REGEX = r'^/api/.*$'
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:8000'
-# ]
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 DEBUG = os.getenv('DEBUG') == 'True'
 
