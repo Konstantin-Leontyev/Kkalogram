@@ -137,5 +137,6 @@ media/
 # tests
 tests/
 pytest.ini
+infra/
 backend/users/tests/
 

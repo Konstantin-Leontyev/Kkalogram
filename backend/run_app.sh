@@ -9,4 +9,4 @@ done;
 python manage.py migrate;
 python manage.py import_csv;
 python manage.py collectstatic --noinput;
-gunicorn -w 2 -b 0:8000 foodgram.wsgi;
+gunicorn -w 2 -b 0.0.0.0:8000 foodgram.wsgi;
