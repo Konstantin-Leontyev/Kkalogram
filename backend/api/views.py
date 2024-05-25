@@ -157,10 +157,6 @@ class RecipeViewSet(ModelViewSet):
             .annotate(amount=Sum('amount'))
         )
         registerFont(TTFont('Slimamif', 'backend/Slimamif.ttf', 'UTF-8'))
-        # response = HttpResponse(content_type='application/pdf')
-        # response['Content-Disposition'] = (
-        #     'attachment; filename="shopping_list.pdf"'
-        # )
         buffer = io.BytesIO()
         page = Canvas(buffer)
         page.setFont('Slimamif', size=24)
