@@ -1,6 +1,8 @@
+import io
+
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.conf import settings
 from djoser.views import UserViewSet
@@ -155,11 +157,12 @@ class RecipeViewSet(ModelViewSet):
             .annotate(amount=Sum('amount'))
         )
         registerFont(TTFont('Slimamif', 'backend/Slimamif.ttf', 'UTF-8'))
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = (
-            'attachment; filename="shopping_list.pdf"'
-        )
-        page = Canvas(response)
+        # response = HttpResponse(content_type='application/pdf')
+        # response['Content-Disposition'] = (
+        #     'attachment; filename="shopping_list.pdf"'
+        # )
+        buffer = io.BytesIO()
+        page = Canvas(buffer)
         page.setFont('Slimamif', size=24)
         page.drawString(200, 800, 'Список ингредиентов')
         page.setFont('Slimamif', size=16)
@@ -171,7 +174,10 @@ class RecipeViewSet(ModelViewSet):
             height -= 25
         page.showPage()
         page.save()
-        return response
+        buffer.seek(0)
+        return FileResponse(buffer,
+                            as_attachment=True,
+                            filename='shopping_list.pdf')
 
 
 class TagViewSet(ReadOnlyModelViewSet):
