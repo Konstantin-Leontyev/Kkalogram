@@ -1,26 +1,12 @@
 import os
 from pathlib import Path
 
-import sentry_sdk
 from django.core.management.utils import get_random_secret_key
 from dotenv.main import load_dotenv
-from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv()
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split()
-
-PROJECT_SENTRY_SDN = os.getenv('PROJECT_SENTRY_SDN', '')
-
-if PROJECT_SENTRY_SDN:
-    sentry_sdk.init(
-        dsn=PROJECT_SENTRY_SDN,
-        integrations=[
-            DjangoIntegration(),
-        ],
-        traces_sample_rate=1.0,
-        send_default_pii=True
-    )
 
 AUTH_PASSWORD_VALIDATORS = [
     {
