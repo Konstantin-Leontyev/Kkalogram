@@ -12,6 +12,7 @@ from reportlab.pdfgen.canvas import Canvas
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
@@ -38,6 +39,7 @@ User = get_user_model()
 class FoodgramUserViewSet(UserViewSet):
     """Describes custom user view set."""
 
+    pagination_class = LimitOffsetPagination
     serializer_class = FoodgramUserSerializer
     search_fields = ['email', 'username']
 
@@ -99,6 +101,7 @@ class RecipeViewSet(ModelViewSet):
     serializer_class = PostUpdateRecipeSerializer
     filterset_class = RecipeFilter
     filter_backends = [AuthorFilter, DjangoFilterBackend]
+    pagination_class = LimitOffsetPagination
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     search_fields = ['author__id']
 
