@@ -27,6 +27,7 @@ from recipes.models import Recipe, RecipeIngredient
 from tags.models import Tag
 
 from .filters import AuthorFilter, IngredientFilter, RecipeFilter
+from .paginators import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CartSerializer, FavoriteSerializer,
                           FollowCreateSerializer, FollowSerializer,
@@ -101,7 +102,7 @@ class RecipeViewSet(ModelViewSet):
     serializer_class = PostUpdateRecipeSerializer
     filterset_class = RecipeFilter
     filter_backends = [AuthorFilter, DjangoFilterBackend]
-    pagination_class = LimitOffsetPagination
+    pagination_class = LimitPageNumberPagination
     permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     search_fields = ['author__id']
 
