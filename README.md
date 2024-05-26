@@ -52,7 +52,7 @@ ___
 
 Каждый ресурс описан в документации: указаны эндпоинты (адреса, по которым можно сделать запрос), разрешённые типы запросов, права доступа и дополнительные параметры, когда это необходимо.
 
-Документация доступна по ссылкам [swagger](https://kkalogram.ru/swagger/) [redoc](https://kkalogram.ru/redoc/).
+Документация доступна по ссылкам [swagger](https://kkalogram.ru/swagger/) и [redoc](https://kkalogram.ru/redoc/).
 )).
 <p align="right">(<a href="#description">Вернуться в начало</a>)</p>
 
