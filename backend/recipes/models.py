@@ -5,8 +5,9 @@ from django.db.models import (CASCADE, SET_NULL, CharField, ForeignKey,
                               PositiveSmallIntegerField, TextField,
                               UniqueConstraint)
 
-from core.constants import (MAX_COOKING_TIME, MIN_COOKING_TIME,
-                            MIN_INGREDIENT_AMOUNT, NAME_FIELD_MAX_LENGTH)
+from core.constants import (MAX_COOKING_TIME, MAX_INGREDIENT_AMOUNT,
+                            MIN_COOKING_TIME, MIN_INGREDIENT_AMOUNT,
+                            NAME_FIELD_MAX_LENGTH)
 from ingredients.models import Ingredient
 from tags.models import Tag
 
@@ -26,11 +27,13 @@ class Recipe(Model):
         validators=[
             MinValueValidator(
                 limit_value=MIN_COOKING_TIME,
-                message='Минимальное время приготовления 1 мин.'
+                message='Минимальное время приготовления '
+                        f'{MIN_COOKING_TIME} мин.'
             ),
             MaxValueValidator(
                 limit_value=MAX_COOKING_TIME,
-                message='Максимальное время приготовления 2 года.'
+                message='Максимальное время приготовления '
+                        f'{MAX_COOKING_TIME} мин.'
             ),
         ],
         verbose_name='Время приготовления',
@@ -75,7 +78,13 @@ class RecipeIngredient(Model):
         validators=[
             MinValueValidator(
                 limit_value=MIN_INGREDIENT_AMOUNT,
-                message='Минимальное количество ингредиентов 1.'
+                message='Минимальное количество ингредиентов '
+                        f'{MIN_INGREDIENT_AMOUNT}.'
+            ),
+            MaxValueValidator(
+                limit_value=MAX_COOKING_TIME,
+                message='Максимальное количество ингредиентов '
+                        f'{MAX_INGREDIENT_AMOUNT}.'
             ),
         ],
         verbose_name="Количество",

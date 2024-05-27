@@ -131,8 +131,9 @@ class FollowSerializer(FoodgramUserSerializer):
             try:
                 recipes = recipes[:int(limit)]
             except TypeError:
-                print('Ошибка выполнения запроса.'
-                      'Значение `recipes_limit` должно быть числом.')
+                raise ValidationError('Ошибка выполнения запроса. '
+                                      'Значение `recipes_limit` '
+                                      'должно быть числом.')
         return RecipeSerializer(
             recipes,
             many=True,
@@ -273,14 +274,17 @@ class ListRetrieveRecipeSerializer(ModelSerializer):
                                           id=instance.id).exists())
 
 
-class PostUpdateRecipeSerializer(ListRetrieveRecipeSerializer):
+class PostUpdateRecipeSerializer(ModelSerializer):
     """Describes write recipe serializer class."""
+
+    author = FoodgramUserSerializer(read_only=True)
+    image = Base64ImageField()
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,
                                   queryset=Tag.objects.all())
 
-    class Meta(ListRetrieveRecipeSerializer.Meta):
+    class Meta:
         """Describes write recipe serializer metaclass."""
 
         fields = (
@@ -293,6 +297,7 @@ class PostUpdateRecipeSerializer(ListRetrieveRecipeSerializer):
             'tags',
             'text',
         )
+        model = Recipe
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""
@@ -323,8 +328,9 @@ class PostUpdateRecipeSerializer(ListRetrieveRecipeSerializer):
 
         return data
 
+    @staticmethod
     @atomic
-    def create_ingredients(self, ingredients, recipe):
+    def create_ingredients(ingredients, recipe):
         """Create recipe ingredients."""
         RecipeIngredient.objects.bulk_create(
             [RecipeIngredient(
