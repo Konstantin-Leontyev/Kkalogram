@@ -13,7 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
+from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
@@ -152,7 +152,7 @@ class RecipeViewSet(ModelViewSet):
         return Response(status=HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
-            permission_classes=[AllowAny])
+            permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         """Describes shopping cart download url action logic."""
         ingredients = (
