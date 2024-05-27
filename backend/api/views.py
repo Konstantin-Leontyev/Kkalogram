@@ -156,7 +156,7 @@ class RecipeViewSet(ModelViewSet):
     def download_shopping_cart(self, request):
         """Describes shopping cart download url action logic."""
         ingredients = (
-            RecipeIngredient.objects.filter(recipe__cart__user=request.user)
+            RecipeIngredient.objects.filter(recipe__cart__user=request.user.id)
             .values('ingredients__name', 'ingredients__measurement_unit')
             .annotate(amount=Sum('amount'))
         )
