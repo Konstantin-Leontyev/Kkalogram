@@ -160,7 +160,7 @@ class RecipeViewSet(ModelViewSet):
             .values('ingredients__name', 'ingredients__measurement_unit')
             .annotate(amount=Sum('amount'))
         )
-        registerFont(TTFont('Slimamif', 'backend/Slimamif.ttf', 'UTF-8'))
+        registerFont(TTFont('Slimamif', '/app/Slimamif.ttf', 'UTF-8'))
         buffer = io.BytesIO()
         page = Canvas(buffer)
         page.setFont('Slimamif', size=24)

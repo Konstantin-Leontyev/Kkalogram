@@ -26,15 +26,9 @@ AUTH_PASSWORD_VALIDATORS = [
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = os.getenv('DEBUG') == 'True'
+PRODUCTION = os.getenv('PRODUCTION') == 'True'
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
+if PRODUCTION:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -45,6 +39,14 @@ else:
             'PORT': os.getenv('DB_PORT', 5432)
         }
     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -87,13 +89,12 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'tags.apps.TagsConfig',
     'users.apps.UsersConfig',
-
 ]
 
 LANGUAGE_CODE = 'ru-RU'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' if DEBUG else '/media'
+MEDIA_ROOT = '/media' if PRODUCTION else BASE_DIR / 'media'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
