@@ -101,13 +101,13 @@ ___
 * Скопируйте файлы docker-compose.yml .env в папку foodgram на удаленном сервере.
 
   ```angular2html
-  scp -i <path_to_your_SSH_key>/<your_SSH_key_name> docker-compose.yml .env \ 
+  scp -i <path_to_your_SSH_key>/<your_SSH_key_name> docker-compose.production.yml .env \ 
     <your_username>@<your_server_ip></your_server_ip>:/home/<your_username>/foodgram/
   ```
   
 * На удаленном сервере запустите сборку проекта:
   ```angular2html
-  sudo docker-compose up -d --build
+  sudo docker compose -f docker-compose.production.yml up -d
   ```
 
 Для использования Workflow:
