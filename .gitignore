@@ -140,4 +140,5 @@ docs/
 pytest.ini
 infra/
 backend/users/tests/
+docker-compose.yml
 
