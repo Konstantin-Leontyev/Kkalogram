@@ -7,14 +7,14 @@ volumes:
 
 services:
   db:
-#    container_name: db
+    container_name: db
     image: postgres:13.10
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-#    container_name: backend
+    container_name: backend
     image: kaleontyev/kkalogram_backend
     env_file: .env
     depends_on:
@@ -25,7 +25,7 @@ services:
       - media:/media
 
   frontend:
-#    container_name: frontend
+    container_name: frontend
     image: kaleontyev/kkalogram_frontend
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
@@ -33,7 +33,7 @@ services:
       - static:/frontend_static
 
   gateway:
-#    container_name: gateway
+    container_name: gateway
     image: kaleontyev/kkalogram_gateway
     depends_on:
       - backend

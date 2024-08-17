@@ -68,15 +68,17 @@ ___
   sudo apt-get update && sudo apt-get -y install -f && sudo apt-get -y full-upgrade && sudo apt-get -y autoremove && sudo apt-get -y autoclean && sudo apt-get -y clean
   ```
 
-* Установите docker:
+* Установите [docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script):
   ```angular2html
-  sudo apt-get -y install docker.io 
+  sudo apt install curl
+  curl -fsSL https://test.docker.com -o test-docker.sh
+  sudo sh test-docker.sh
   ```
 
-* Установите docker-compose:
+* Проверьте, что Docker работает:
   
   ```angular2html
-  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo systemctl status docker
   ```
 
 * Установите права пользователя для docker-compose:
@@ -102,13 +104,13 @@ ___
 * Скопируйте файлы docker-compose.yml .env в папку kkalogram на удаленном сервере.
 
   ```angular2html
-  scp -i <path_to_your_SSH_key>/<your_SSH_key_name> docker-compose.production.yml .env \ 
+  scp -i <path_to_your_SSH_key>/<your_SSH_key_name> docker-compose.yml .env \ 
     <your_username>@<your_server_ip></your_server_ip>:/home/<your_username>/kkalogram/
   ```
   
 * На удаленном сервере запустите сборку проекта:
   ```angular2html
-  sudo docker compose -f docker-compose.production.yml up -d
+  sudo docker compose -f docker-compose.yml up -d
   ```
 
 Для использования Workflow:

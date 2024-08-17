@@ -17,4 +17,4 @@ RUN pip install -U pip && \
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "kkalogram.wsgi"]
