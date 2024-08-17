@@ -31,7 +31,7 @@ from .paginators import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CartSerializer, FavoriteSerializer,
                           FollowCreateSerializer, FollowSerializer,
-                          FoodgramUserSerializer, IngredientSerializer,
+                          KkalogramUserSerializer, IngredientSerializer,
                           PostUpdateRecipeSerializer, TagSerializer)
 
 User = get_user_model()
@@ -41,7 +41,7 @@ class FoodgramUserViewSet(UserViewSet):
     """Describes custom user view set."""
 
     pagination_class = LimitOffsetPagination
-    serializer_class = FoodgramUserSerializer
+    serializer_class = KkalogramUserSerializer
     search_fields = ['email', 'username']
 
     def get_permissions(self):

@@ -40,7 +40,7 @@ class FavoriteSerializer(UserRecipeSerializer):
         model = Favorite
 
 
-class FoodgramUserCreateSerializer(UserCreateSerializer):
+class KkalogramUserCreateSerializer(UserCreateSerializer):
     """Describes custom user create serializer class."""
 
     email = EmailField(
@@ -80,7 +80,7 @@ class FoodgramUserCreateSerializer(UserCreateSerializer):
         }
 
 
-class FoodgramUserSerializer(UserSerializer):
+class KkalogramUserSerializer(UserSerializer):
     """Describes custom user serializer class."""
 
     is_subscribed = SerializerMethodField()
@@ -105,17 +105,17 @@ class FoodgramUserSerializer(UserSerializer):
                                           user=user).exists())
 
 
-class FollowSerializer(FoodgramUserSerializer):
+class FollowSerializer(KkalogramUserSerializer):
     """Describes follow serializer class."""
 
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
-    class Meta(FoodgramUserSerializer.Meta):
+    class Meta(KkalogramUserSerializer.Meta):
         """Describes follow serializer metaclass."""
 
         fields = ('recipes_count', 'recipes',
-                  *FoodgramUserSerializer.Meta.fields)
+                  *KkalogramUserSerializer.Meta.fields)
         read_only_fields = ['email', 'first_name', 'last_name', 'username']
 
     def get_recipes_count(self, instance):
@@ -229,7 +229,7 @@ class RecipeSerializer(ModelSerializer):
 class ListRetrieveRecipeSerializer(ModelSerializer):
     """Describes read recipe serializer."""
 
-    author = FoodgramUserSerializer(read_only=True)
+    author = KkalogramUserSerializer(read_only=True)
     image = Base64ImageField()
     ingredients = SerializerMethodField()
     is_favorited = SerializerMethodField()
@@ -277,7 +277,7 @@ class ListRetrieveRecipeSerializer(ModelSerializer):
 class PostUpdateRecipeSerializer(ModelSerializer):
     """Describes write recipe serializer class."""
 
-    author = FoodgramUserSerializer(read_only=True)
+    author = KkalogramUserSerializer(read_only=True)
     image = Base64ImageField()
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
@@ -365,11 +365,14 @@ class PostUpdateRecipeSerializer(ModelSerializer):
         setting new values.
         """
         ingredients = validated_data.pop('ingredients')
-        instance.ingredients.clear()
         tags = validated_data.pop('tags')
+        instance = super().update(instance, validated_data)
         instance.tags.clear()
         instance.tags.set(tags)
+        instance.ingredients.clear()
         self.create_ingredients(ingredients, recipe=instance)
+
+        instance.save()
         return instance
 
     def to_representation(self, instance):

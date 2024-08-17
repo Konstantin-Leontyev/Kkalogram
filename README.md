@@ -1,4 +1,4 @@
-# Проект Foodgram
+# Проект Kkalogram
 
 ### Технологии
 ![example workflow](https://github.com/Konstantin-Leontyev/kkalogram/actions/workflows/kkalogram.yml/badge.svg)  
