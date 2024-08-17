@@ -175,8 +175,7 @@ const RecipeCreate = ({ onEdit }) => {
                 className={styles.ingredientsAddedItem}
               >
                 <span className={styles.ingredientsAddedItemTitle}>{item.name}</span>
-                <span> - </span>
-                <span>{item.amount}{item.measurement_unit} </span>
+                <span> - {item.amount}{item.measurement_unit}</span>
                 <span
                   className={styles.ingredientsAddedItemRemove}
                   onClick={_ => {

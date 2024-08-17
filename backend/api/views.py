@@ -169,7 +169,7 @@ class RecipeViewSet(ModelViewSet):
         height = 750
         for index, ingredient in enumerate(ingredients, 1):
             name, measurement_unit, amount = ingredient.values()
-            page.drawString(75, height, (f'<{index}> {name} - {amount}, '
+            page.drawString(75, height, (f'<{index}> {name} - {amount} '
                                          f'{measurement_unit}'))
             height -= 25
         page.showPage()
