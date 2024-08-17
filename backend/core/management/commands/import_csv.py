@@ -2,8 +2,8 @@ import csv
 
 # from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-
 from foodgram.settings import BASE_DIR
+
 from ingredients.models import Ingredient
 # from recipes.models import Recipe
 from tags.models import Tag
