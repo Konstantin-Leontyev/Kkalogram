@@ -59,9 +59,9 @@ DJOSER = {
 
     },
     "SERIALIZERS": {
-        'current_user': 'api.serializers.FoodgramUserSerializer',
-        'user': 'api.serializers.FoodgramUserSerializer',
-        'user_create': 'api.serializers.FoodgramUserCreateSerializer',
+        'current_user': 'api.serializers.KkalogramUserSerializer',
+        'user': 'api.serializers.KkalogramUserSerializer',
+        'user_create': 'api.serializers.KkalogramUserCreateSerializer',
     },
 }
 

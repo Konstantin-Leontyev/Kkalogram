@@ -31,7 +31,7 @@ from .paginators import LimitPageNumberPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CartSerializer, FavoriteSerializer,
                           FollowCreateSerializer, FollowSerializer,
-                          KkalogramUserSerializer, IngredientSerializer,
+                          IngredientSerializer, KkalogramUserSerializer,
                           PostUpdateRecipeSerializer, TagSerializer)
 
 User = get_user_model()
