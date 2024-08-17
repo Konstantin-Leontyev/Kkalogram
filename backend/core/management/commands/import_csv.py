@@ -2,9 +2,9 @@ import csv
 
 # from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from kkalogram.settings import BASE_DIR
 
 from ingredients.models import Ingredient
+from kkalogram.settings import BASE_DIR
 # from recipes.models import Recipe
 from tags.models import Tag
 
