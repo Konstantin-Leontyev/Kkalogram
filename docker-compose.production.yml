@@ -15,7 +15,7 @@ services:
 
   backend:
 #    container_name: backend
-    image: kaleontyev/foodgram_backend
+    image: kaleontyev/kkalogram_backend
     env_file: .env
     depends_on:
       - db
@@ -26,7 +26,7 @@ services:
 
   frontend:
 #    container_name: frontend
-    image: kaleontyev/foodgram_frontend
+    image: kaleontyev/kkalogram_frontend
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
@@ -34,7 +34,7 @@ services:
 
   gateway:
 #    container_name: gateway
-    image: kaleontyev/foodgram_gateway
+    image: kaleontyev/kkalogram_gateway
     depends_on:
       - backend
       - frontend
