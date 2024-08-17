@@ -117,7 +117,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-ROOT_URLCONF = 'foodgram.urls'
+ROOT_URLCONF = 'kkalogram.urls'
 
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
@@ -152,7 +152,7 @@ TEMPLATES = [
 
 TIME_ZONE = 'UTC'
 
-WSGI_APPLICATION = 'foodgram.wsgi.application'
+WSGI_APPLICATION = 'kkalogram.wsgi.application'
 
 USE_I18N = True
 
