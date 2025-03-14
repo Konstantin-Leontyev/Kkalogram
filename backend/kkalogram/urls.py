@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 schema_view = get_schema_view(
     Info(title="Kkalogram API",
          default_version='v1',
-         description="Документация для приложения cats проекта Kkalogram",
+         description="Документация API проекта Kkalogram",
          contact=Contact(email="info@kkalogram.ru"),
          license=License(name="BSD License"),
          ),

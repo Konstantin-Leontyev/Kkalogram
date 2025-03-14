@@ -1,7 +1,7 @@
 volumes:
-  kkalogram_pg_data:
-  kkalogram_static:
-  kkalogram_media:
+  pg_data:
+  static:
+  media:
 
 services:
   db:
@@ -9,7 +9,7 @@ services:
     image: postgres:13.10
     env_file: .env
     volumes:
-      - kkalogram_pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
 
   frontend:
     container_name: kkalogram_frontend
@@ -17,7 +17,7 @@ services:
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
-      - kkalogram_static:/frontend_static
+      - static:/frontend_static
 
   backend:
     container_name: kkalogram_backend
@@ -27,8 +27,8 @@ services:
       - db
       - frontend
     volumes:
-      - kkalogram_static:/backend_static
-      - kkalogram_media:/media
+      - static:/backend_static
+      - media:/media
 
   gateway:
     container_name: kkalogram_gateway
@@ -39,5 +39,5 @@ services:
     ports:
       - 8000:80
     volumes:
-      - kkalogram_static:/staticfiles
-      - kkalogram_media:/media
+      - static:/staticfiles
+      - media:/media
