@@ -278,7 +278,11 @@ class PostUpdateRecipeSerializer(ModelSerializer):
     """Describes write recipe serializer class."""
 
     author = KkalogramUserSerializer(read_only=True)
-    image = Base64ImageField()
+    image = Base64ImageField(required=False, allow_null=True)
+    image_url = SerializerMethodField(
+        'get_image_url',
+        read_only=True,
+    )
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,
@@ -298,6 +302,11 @@ class PostUpdateRecipeSerializer(ModelSerializer):
             'text',
         )
         model = Recipe
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""
