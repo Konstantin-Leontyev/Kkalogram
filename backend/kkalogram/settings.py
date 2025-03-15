@@ -122,7 +122,7 @@ ROOT_URLCONF = 'kkalogram.urls'
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'media')
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
