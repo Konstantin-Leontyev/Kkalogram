@@ -278,7 +278,7 @@ class PostUpdateRecipeSerializer(ModelSerializer):
     """Describes write recipe serializer class."""
 
     author = KkalogramUserSerializer(read_only=True)
-    image = Base64ImageField(use_url=True)
+    image = Base64ImageField()
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,

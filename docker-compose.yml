@@ -28,7 +28,7 @@ services:
       - frontend
     volumes:
       - static:/backend_static
-      - media:/app/media
+      - media:/media
 
   gateway:
     container_name: kkalogram_gateway
@@ -37,7 +37,7 @@ services:
       - backend
       - frontend
     ports:
-      - 8080:80
+      - 8000:80
     volumes:
       - static:/staticfiles
-      - media:/app/media
+      - media:/media
