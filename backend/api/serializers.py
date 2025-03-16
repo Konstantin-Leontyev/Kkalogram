@@ -292,10 +292,8 @@ class PostUpdateRecipeSerializer(ModelSerializer):
 
     author = KkalogramUserSerializer(read_only=True)
     image = Base64ImageField()
-    image_url = SerializerMethodField(
-      'get_image_url',
-      read_only=True
-    )
+    image_url = SerializerMethodField('get_image_url',
+                                      read_only=True)
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,
