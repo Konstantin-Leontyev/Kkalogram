@@ -1,13 +1,15 @@
+import base64
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.files.base import ContentFile
 from django.db.models import F
 from django.db.transaction import atomic
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from drf_extra_fields.fields import Base64ImageField
 from rest_framework.exceptions import ValidationError
 from rest_framework.relations import PrimaryKeyRelatedField
-from rest_framework.serializers import (CharField, EmailField, ModelSerializer,
-                                        SerializerMethodField)
+from rest_framework.serializers import (CharField, EmailField, ImageField,
+                                        ModelSerializer, SerializerMethodField)
 from rest_framework.validators import UniqueValidator
 
 from api.constants import USERNAME_FIELD_MAX_LENGTH
@@ -20,6 +22,17 @@ from recipes.models import Recipe, RecipeIngredient
 from tags.models import Tag
 
 User = get_user_model()
+
+
+class Base64ImageField(ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
 
 
 class CartSerializer(UserRecipeSerializer):
@@ -279,6 +292,10 @@ class PostUpdateRecipeSerializer(ModelSerializer):
 
     author = KkalogramUserSerializer(read_only=True)
     image = Base64ImageField()
+    image_url = SerializerMethodField(
+      'get_image_url',
+      read_only=True
+    )
     ingredients = RecipeIngredientSerializer(many=True,
                                              required=True)
     tags = PrimaryKeyRelatedField(many=True,
@@ -292,12 +309,18 @@ class PostUpdateRecipeSerializer(ModelSerializer):
             'cooking_time',
             'id',
             'image',
+            'image_url',
             'ingredients',
             'name',
             'tags',
             'text',
         )
         model = Recipe
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
 
     def validate(self, data):
         """Validate ingredients and tags request lists."""
