@@ -307,8 +307,10 @@ class PostUpdateRecipeSerializer(ModelSerializer):
         if instance.image:
             request = self.context.get('request')
             if request:
-                representation['image'] = request.build_absolute_uri(
-                    instance.image.url)
+                absolute_url = request.build_absolute_uri(instance.image.url)
+                absolute_url = absolute_url.replace(
+                    request.get_host(), 'kkalogram.ru')
+                representation['image'] = absolute_url
             else:
                 # Если запроса нет, возвращаем относительный URL
                 representation['image'] = instance.image.url
