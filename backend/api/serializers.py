@@ -299,6 +299,21 @@ class PostUpdateRecipeSerializer(ModelSerializer):
         )
         model = Recipe
 
+    def to_representation(self, instance):
+        # Получаем стандартное представление объекта
+        representation = super().to_representation(instance)
+        
+        # Если у экземпляра есть изображение, строим абсолютный URL
+        if instance.image:
+            request = self.context.get('request')  # Получаем запрос из контекста
+            if request:
+                representation['image'] = request.build_absolute_uri(instance.image.url)
+            else:
+                # Если запроса нет, возвращаем относительный URL
+                representation['image'] = instance.image.url
+        
+        return representation
+
     def validate(self, data):
         """Validate ingredients and tags request lists."""
         image = self.initial_data.get('image')
