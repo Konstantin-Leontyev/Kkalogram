@@ -253,24 +253,6 @@ class ListRetrieveRecipeSerializer(ModelSerializer):
         )
         model = Recipe
 
-    def to_representation(self, instance):
-        # Получаем стандартное представление объекта
-        representation = super().to_representation(instance)
-
-        # Если у экземпляра есть изображение, строим абсолютный URL
-        if instance.image:
-            request = self.context.get('request')
-            if request:
-                absolute_url = request.build_absolute_uri(instance.image.url)
-                absolute_url = absolute_url.replace(
-                    request.get_host(), 'kkalogram.ru')
-                representation['image'] = absolute_url
-            else:
-                # Если запроса нет, возвращаем относительный URL
-                representation['image'] = instance.image.url
-
-        return representation
-
     def get_ingredients(self, instance):
         """Ingredients get function."""
         return instance.ingredients.values(
@@ -392,10 +374,3 @@ class PostUpdateRecipeSerializer(ModelSerializer):
 
         instance.save()
         return instance
-
-    def to_representation(self, instance):
-        """Change serializer to representation."""
-        return ListRetrieveRecipeSerializer(
-            instance,
-            context={'request': self.context.get('request')}
-        ).data
