@@ -253,6 +253,16 @@ class ListRetrieveRecipeSerializer(ModelSerializer):
         )
         model = Recipe
 
+    def to_representation(self, instance):
+        """Change serializer to representation."""
+        representation = super().to_representation(instance)
+
+        # Возвращаем относительный URL изображения
+        if instance.image:
+            representation['image'] = instance.image.url
+
+        return representation
+
     def get_ingredients(self, instance):
         """Ingredients get function."""
         return instance.ingredients.values(
